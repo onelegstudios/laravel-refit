@@ -11,12 +11,12 @@ class RefitCommand extends Command
     /**
      * The command signature.
      */
-    protected $signature = 'laravel-refit:placeholder';
+    protected $signature = 'refit:placeholder';
 
     /**
      * The command description.
      */
-    protected $description = 'Placeholder Artisan command shipped by the package laravel-refit.';
+    protected $description = 'Placeholder Artisan command shipped by the package refit.';
 
     /**
      * Execute the console command.

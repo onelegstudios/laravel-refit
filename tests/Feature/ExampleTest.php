@@ -13,15 +13,15 @@ it('returns the same instance from the container', function () {
 });
 
 it('merges the package config', function () {
-    expect(config('laravel-refit.placeholder'))->toBe('default');
+    expect(config('refit.placeholder'))->toBe('default');
 });
 
 it('loads the package views', function () {
-    expect(view()->exists('laravel-refit::placeholder'))->toBeTrue();
+    expect(view()->exists('refit::placeholder'))->toBeTrue();
 });
 
 it('registers the artisan command', function () {
-    $this->artisan('laravel-refit:placeholder')
+    $this->artisan('refit:placeholder')
         ->expectsOutputToContain('Refit placeholder command executed.')
         ->assertSuccessful();
 });
