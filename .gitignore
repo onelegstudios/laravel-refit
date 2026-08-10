@@ -1,5 +1,6 @@
 /vendor
 /build
+/tests/fixtures/starter-kits
 /.phpunit.cache
 /.phpunit.result.cache
 /coverage

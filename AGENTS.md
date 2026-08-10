@@ -22,6 +22,7 @@ It is one-time scaffolding: it rewrites files in place, the changes are one-way 
 - Pest tests: `composer test:unit`
 - Workbench build: `composer build`
 - Workbench server: `composer serve`
+- Starter kit fixtures: `composer starter-kits` (downloads every `laravel new` Livewire variation to `tests/fixtures/starter-kits`, gitignored)
 
 ## Local Skills
 

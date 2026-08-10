@@ -59,6 +59,9 @@
       "@build",
       "@php vendor/bin/testbench serve --ansi"
     ],
+    "starter-kits": [
+      "@php bin/download-starter-kits.php"
+    ],
     "lint": [
       "vendor/bin/pint --parallel"
     ],
