@@ -71,23 +71,46 @@ it('leaves no partial include behind', function (string $kit): void {
     }
 })->with(starterKits());
 
-it('groups components under a subfolder and repoints every reference', function (): void {
+it('groups components by domain and repoints every reference', function (): void {
     [$project] = runTask(new NamespaceComponents, 'livewire');
 
-    expect($project->exists('resources/views/components/ui/app-logo.blade.php'))->toBeTrue()
+    expect($project->exists('resources/views/components/brand/logo.blade.php'))->toBeTrue()
+        ->and($project->exists('resources/views/components/auth/header.blade.php'))->toBeTrue()
         ->and($project->get('resources/views/layouts/app/sidebar.blade.php'))
-        ->toContain('<x-ui.app-logo')
+        ->toContain('<x-brand.logo')
         ->not->toContain('<x-app-logo');
+});
+
+it('drops the prefix the folder now carries', function (): void {
+    [$project] = runTask(new NamespaceComponents, 'livewire');
+
+    expect($project->get('resources/views/pages/auth/login.blade.php'))
+        ->toContain('<x-auth.session-status')
+        ->not->toContain('<x-auth-session-status');
+});
+
+it('leaves a component with nothing to group with in the fallback folder', function (): void {
+    [$project] = runTask(new NamespaceComponents, 'livewire');
+
+    expect($project->exists('resources/views/components/ui/placeholder-pattern.blade.php'))->toBeTrue()
+        ->and($project->get('resources/views/dashboard.blade.php'))
+        ->toContain('<x-ui.placeholder-pattern');
 });
 
 it('does not confuse two components sharing a name prefix', function (): void {
     [$project] = runTask(new NamespaceComponents, 'livewire');
 
-    $sidebar = $project->get('resources/views/components/ui/app-logo.blade.php');
+    $logo = $project->get('resources/views/components/brand/logo.blade.php');
 
-    expect($sidebar)->toContain('<x-ui.app-logo-icon')
-        ->and($project->exists('resources/views/components/ui/app-logo-icon.blade.php'))->toBeTrue();
+    expect($logo)->toContain('<x-brand.logo-icon')
+        ->and($project->exists('resources/views/components/brand/logo-icon.blade.php'))->toBeTrue();
 });
+
+it('leaves no loose component behind in any kit', function (string $kit): void {
+    [$project] = runTask(new NamespaceComponents, $kit);
+
+    expect($project->looseComponents())->toBe([]);
+})->with(starterKits());
 
 it('keeps only the auth layout the application renders', function (): void {
     [$project] = runTask(new KeepOneAuthLayout, 'livewire');

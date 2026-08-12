@@ -89,6 +89,40 @@ final class Project
     }
 
     /**
+     * Loose anonymous components, as bare names.
+     *
+     * Top level only: anything already in a subfolder is namespaced. Read live
+     * for the same reason as {@see blades()} — a task earlier in the run may
+     * still be adding files to the directory.
+     *
+     * @return list<string>
+     */
+    public function looseComponents(): array
+    {
+        $matches = glob($this->path('resources/views/components').'/*.blade.php');
+
+        if ($matches === false) {
+            return [];
+        }
+
+        $names = [];
+
+        foreach ($matches as $path) {
+            $name = basename($path, '.blade.php');
+
+            // Single-file Livewire components carry an installer-applied prefix
+            // that is part of the real filename. Leave those to Livewire.
+            if (preg_match('/^[a-z0-9]+(?:-[a-z0-9]+)*$/', $name) !== 1) {
+                continue;
+            }
+
+            $names[] = $name;
+        }
+
+        return $names;
+    }
+
+    /**
      * A short human description of the kit, for the command's summary line.
      */
     public function describe(): string
