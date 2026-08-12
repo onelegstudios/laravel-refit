@@ -63,7 +63,7 @@
       "@build",
       "@php vendor/bin/testbench serve --ansi"
     ],
-    "starter-kits": [
+    "fixtures": [
       "@php bin/download-starter-kits.php"
     ],
     "icons": [
@@ -71,6 +71,11 @@
     ],
     "icons:check": [
       "@php bin/download-icons.php --check"
+    ],
+    "refresh": [
+      "Composer\\Config::disableProcessTimeout",
+      "@icons",
+      "@fixtures"
     ],
     "lint": [
       "vendor/bin/pint --parallel"

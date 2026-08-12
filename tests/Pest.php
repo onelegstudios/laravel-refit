@@ -9,7 +9,7 @@ use Onelegstudios\Refit\Tests\TestCase;
 uses(TestCase::class)->in(__DIR__);
 
 /**
- * The starter kit variations `composer starter-kits` downloads.
+ * The starter kit variations `composer fixtures` downloads.
  *
  * @return list<string>
  */
@@ -31,14 +31,14 @@ function fixturePath(string $kit): string
 
 /**
  * Fixtures are gitignored, so any test needing one skips when it is absent.
- * Run `composer starter-kits` to download them.
+ * Run `composer fixtures` to download them.
  */
 function requireFixture(string $kit): string
 {
     $path = fixturePath($kit);
 
     if (! is_dir($path)) {
-        test()->markTestSkipped("Starter kit fixture [{$kit}] is missing — run `composer starter-kits`.");
+        test()->markTestSkipped("Starter kit fixture [{$kit}] is missing — run `composer fixtures`.");
     }
 
     return $path;

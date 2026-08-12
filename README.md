@@ -177,7 +177,7 @@ Tests that exercise a real starter kit skip themselves unless the fixtures have
 been downloaded:
 
 ```bash
-composer starter-kits
+composer fixtures
 ```
 
 ## Changelog
