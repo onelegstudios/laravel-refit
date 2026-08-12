@@ -23,6 +23,7 @@ It is one-time scaffolding: it rewrites files in place, the changes are one-way 
 - Workbench build: `composer build`
 - Workbench server: `composer serve`
 - Starter kit fixtures: `composer starter-kits` (downloads every `laravel new` Livewire variation to `tests/fixtures/starter-kits`, gitignored)
+- Lucide artwork: `composer icons` (refreshes the committed `resources/icons/lucide` bundle from the latest Lucide release); `composer icons:check` reports drift without writing
 
 ## Local Skills
 

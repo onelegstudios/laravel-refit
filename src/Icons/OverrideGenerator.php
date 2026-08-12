@@ -16,7 +16,10 @@ use RuntimeException;
  *
  * Lucide artwork is bundled with refit rather than pulled from a Blade Icons
  * package: refit only ever generates the names in {@see IconMap}, so a package
- * dependency would add weight without widening what the tool can translate.
+ * dependency would add weight without widening what the tool can translate. It
+ * would also make the output vary with whatever Composer resolved, when the point
+ * is to emit the same drawing the kit already vendors. `composer icons` refreshes
+ * the bundle from upstream as a reviewable commit instead.
  */
 final class OverrideGenerator
 {

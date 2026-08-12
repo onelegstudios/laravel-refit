@@ -102,7 +102,7 @@ final class IconMap
         'envelope' => 'mail',
         'eye' => 'eye',
         'eye-slash' => 'eye-off',
-        'finger-print' => 'fingerprint',
+        'finger-print' => 'fingerprint-pattern',
         'home' => 'house',
         'information-circle' => 'info',
         'key' => 'key',
