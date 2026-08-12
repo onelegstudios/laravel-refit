@@ -56,8 +56,14 @@ jobs:
       - name: Linter
         run: composer lint:check
 
+      # Type coverage is a property of src/, not of the resolved dependency
+      # versions, so it only needs to run once. It must run on prefer-stable:
+      # pest-plugin-type-coverage analyses files in forked processes, and its
+      # shared file cache is only lock-protected from v5.0.2 onwards. Older
+      # versions (what prefer-lowest resolves to) let the forks interleave
+      # writes and corrupt the cache into a PHP parse error.
       - name: Type Coverage
-        if: runner.os != 'Windows'
+        if: runner.os != 'Windows' && matrix.php == '8.5' && matrix.stability == 'prefer-stable'
         run: composer test:types
 
       - name: Test Suite
