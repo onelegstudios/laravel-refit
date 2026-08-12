@@ -130,6 +130,20 @@ final class IconPlanner
                 continue;
             }
 
+            // A translation refit has no artwork for cannot be written, and the
+            // rename has to be dropped with it: pointing a usage at an override
+            // that never gets written would leave a blank where the icon was.
+            if (! $this->generator->has($lucide)) {
+                $report->warn(sprintf(
+                    'No Lucide artwork bundled for "%s" — "%s" stays Heroicons in %s.',
+                    $lucide,
+                    $name,
+                    implode(', ', $paths),
+                ));
+
+                continue;
+            }
+
             if ($lucide !== $name) {
                 $renames[$name] = $lucide;
             }
