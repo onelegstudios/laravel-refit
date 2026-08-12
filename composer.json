@@ -66,6 +66,12 @@
     "starter-kits": [
       "@php bin/download-starter-kits.php"
     ],
+    "icons": [
+      "@php bin/download-icons.php"
+    ],
+    "icons:check": [
+      "@php bin/download-icons.php --check"
+    ],
     "lint": [
       "vendor/bin/pint --parallel"
     ],
