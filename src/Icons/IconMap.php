@@ -9,8 +9,8 @@ namespace Onelegstudios\Refit\Icons;
  *
  * These are semantic, not mechanical: Heroicons' `arrow-right-start-on-rectangle`
  * is Lucide's `log-out`, and `magnifying-glass` is `search`. The set covers every
- * name the five starter kit variants reference. Anything outside it is reported
- * rather than guessed at.
+ * name the five starter kit variants reference, plus the ones Flux's own stubs
+ * render. Anything outside it is reported rather than guessed at.
  */
 final class IconMap
 {
@@ -93,24 +93,30 @@ final class IconMap
         'bars-2' => 'menu',
         'check' => 'check',
         'chevron-down' => 'chevron-down',
+        'chevron-left' => 'chevron-left',
         'chevron-right' => 'chevron-right',
         'chevron-up' => 'chevron-up',
         'chevron-up-down' => 'chevrons-up-down',
+        'clipboard-document' => 'clipboard',
+        'clipboard-document-check' => 'clipboard-check',
         'cog' => 'settings',
         'computer-desktop' => 'monitor',
         'document-duplicate' => 'copy',
         'envelope' => 'mail',
+        'exclamation-triangle' => 'triangle-alert',
         'eye' => 'eye',
         'eye-slash' => 'eye-off',
         'finger-print' => 'fingerprint-pattern',
         'home' => 'house',
         'information-circle' => 'info',
-        'key' => 'key',
+        'key' => 'key-round',
         'lock-closed' => 'lock',
         'magnifying-glass' => 'search',
+        'minus' => 'minus',
         'moon' => 'moon',
         'plus' => 'plus',
         'qr-code' => 'qr-code',
+        'slash' => 'slash',
         'sun' => 'sun',
         'trash' => 'trash-2',
         'user-plus' => 'user-plus',
@@ -146,10 +152,16 @@ final class IconMap
     public const array FLUX_INTERNAL_FALLBACK = [
         'check',
         'chevron-down',
+        'chevron-left',
         'chevron-up-down',
+        'clipboard-document',
+        'clipboard-document-check',
+        'exclamation-triangle',
         'eye',
         'eye-slash',
         'magnifying-glass',
+        'minus',
+        'slash',
         'x-mark',
     ];
 
