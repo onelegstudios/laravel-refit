@@ -116,7 +116,7 @@ it('leaves every view structurally intact after a full run', function (string $k
     expect($dangling)->toBe([]);
 })->with(starterKits());
 
-it('puts promoted partials in the same folder as everything else', function (): void {
+it('groups promoted partials along with everything else', function (): void {
     // Both structure jobs at once used to leave components/ half namespaced,
     // because the folder was read while the plan was built rather than run.
     $root = useKit('livewire');
@@ -130,10 +130,11 @@ it('puts promoted partials in the same folder as everything else', function (): 
     ])->assertSuccessful();
 
     expect(glob($root.'/resources/views/components/*.blade.php'))->toBe([])
-        ->and(is_file($root.'/resources/views/components/ui/head.blade.php'))->toBeTrue()
-        ->and(is_file($root.'/resources/views/components/ui/app-logo.blade.php'))->toBeTrue()
+        ->and(is_file($root.'/resources/views/components/layout/head.blade.php'))->toBeTrue()
+        ->and(is_file($root.'/resources/views/components/settings/heading.blade.php'))->toBeTrue()
+        ->and(is_file($root.'/resources/views/components/brand/logo.blade.php'))->toBeTrue()
         ->and(file_get_contents($root.'/resources/views/layouts/app/sidebar.blade.php'))
-        ->toContain('<x-ui.head />');
+        ->toContain('<x-layout.head />');
 });
 
 /**

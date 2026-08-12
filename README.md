@@ -90,9 +90,43 @@ something that would do nothing.
 | Group | Job |
 | --- | --- |
 | Structure | Use components instead of partials |
-| Structure | Group components under `components/ui` |
+| Structure | Group components into folders |
 | Cleanup | Delete the unused auth layouts |
 | Cleanup | Remove the Flux Pro `@source` line from `app.css` |
+
+Grouping sorts the kit's loose anonymous components by what they are for, and
+drops the prefix once the folder carries it — `<x-app-logo />` becomes
+`<x-brand.logo />`. With both structure jobs picked, the kit comes out like this:
+
+```
+resources/views/components/
+├── auth/
+│   ├── header.blade.php
+│   ├── session-status.blade.php
+│   ├── passkey-registration.blade.php
+│   └── passkey-verify.blade.php
+├── brand/
+│   ├── logo.blade.php
+│   └── logo-icon.blade.php
+├── layout/
+│   ├── head.blade.php
+│   └── desktop-user-menu.blade.php
+├── settings/
+│   └── heading.blade.php
+└── ui/
+    └── placeholder-pattern.blade.php
+```
+
+A component the map has no opinion about is grouped by a prefix it shares with
+another, and one with nothing to group with lands in `ui/`. To lay the tree out
+your own way, register the job with your own map from a service provider:
+
+```php
+use Onelegstudios\Refit\Facades\Refit;
+use Onelegstudios\Refit\Tasks\NamespaceComponents;
+
+Refit::task(new NamespaceComponents(['app-logo' => 'marketing/logo'], fallback: 'shared'));
+```
 
 ### Running without prompts
 
