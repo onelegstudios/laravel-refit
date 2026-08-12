@@ -61,6 +61,17 @@ it('finds all three forms an icon name is written in', function (): void {
     expect($names)->toBe(['key', 'plus', 'users']);
 });
 
+it('finds an icon a component only names as a prop default', function (): void {
+    $names = (new IconScanner)->scanPropDefaults(
+        "@props([\n    'icon' => 'exclamation-triangle',\n    'icon-trailing' => 'chevron-down',\n"
+        ."    'name' => null,\n    'message' => 'x-mark',\n])",
+    );
+
+    sort($names);
+
+    expect($names)->toBe(['chevron-down', 'exclamation-triangle']);
+});
+
 it('renders an override matching the template the kit already uses', function (): void {
     $rendered = (new OverrideGenerator)->render('house');
 

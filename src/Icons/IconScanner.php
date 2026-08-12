@@ -77,6 +77,40 @@ final class IconScanner
     }
 
     /**
+     * Icon names a component defaults its own icon prop to.
+     *
+     * Flux's `error` component renders `exclamation-triangle` without ever
+     * writing it on a tag — it is the default of the `icon` prop, so only the
+     * `@props` array names it. `name` is deliberately not read here: `@props`
+     * declares one on components that have nothing to do with icons.
+     *
+     * @return list<string>
+     */
+    public function scanPropDefaults(string $source): array
+    {
+        if (preg_match_all('/@props\s*\(\s*\[(.*?)]\s*\)/s', $source, $blocks) === 0) {
+            return [];
+        }
+
+        $keys = implode('|', array_map(preg_quote(...), IconMap::NAME_ATTRIBUTES));
+        $names = [];
+
+        foreach ($blocks[1] as $block) {
+            preg_match_all(
+                sprintf('/([\'"])(?:%s)\1\s*=>\s*([\'"])([^\'"]+)\2/', $keys),
+                $block,
+                $defaults,
+            );
+
+            foreach ($defaults[3] as $name) {
+                $names[] = $name;
+            }
+        }
+
+        return array_values(array_unique($names));
+    }
+
+    /**
      * Icon names the installed Flux package renders from inside its own
      * components, discovered by reading its Blade stubs.
      *
@@ -112,7 +146,7 @@ final class IconScanner
                     continue;
                 }
 
-                foreach ($this->scanSource($contents) as $name) {
+                foreach ([...$this->scanSource($contents), ...$this->scanPropDefaults($contents)] as $name) {
                     $names[] = $name;
                 }
             }
