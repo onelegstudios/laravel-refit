@@ -70,6 +70,11 @@ cannot rewrite vendor code, so it writes those overrides at the Heroicons name
 instead, and says so in the file. Without that, half your icons would follow the
 switch and half would not.
 
+`flux:icon.loading` gets the same treatment for the same reason: it is Flux's own
+spinner rather than a Heroicon, so the override is written at `loading` and your
+markup is left alone. It draws Lucide's `loader-circle`, with `animate-spin` so it
+still spins.
+
 Icon names are read in all three forms the kit writes them:
 
 ```blade

@@ -10,7 +10,7 @@ it('bundles artwork for every Lucide name it can translate to', function (): voi
     $generator = new OverrideGenerator;
 
     $missing = array_values(array_filter(
-        array_unique(array_values(IconMap::HEROICONS_TO_LUCIDE)),
+        array_unique([...array_values(IconMap::HEROICONS_TO_LUCIDE), ...array_values(IconMap::FLUX_OWNED)]),
         fn (string $lucide): bool => ! $generator->has($lucide),
     ));
 
@@ -45,9 +45,18 @@ it('never treats the variant keyword as an icon name', function (): void {
         ->and(IconMap::namesAnIcon('flux:icon', 'variant'))->toBeFalse();
 });
 
-it('leaves the Flux spinner alone', function (): void {
-    expect(IconMap::isReserved('loading'))->toBeTrue()
-        ->and(IconMap::toLucide('loading'))->toBeNull();
+it('translates the Flux spinner without renaming it', function (): void {
+    expect(IconMap::isFluxOwned('loading'))->toBeTrue()
+        ->and(IconMap::toLucide('loading'))->toBe('loader-circle')
+        ->and(IconMap::isFluxOwned('envelope'))->toBeFalse();
+});
+
+it('keeps the spinner spinning', function (): void {
+    $rendered = (new OverrideGenerator)->render('loader-circle', overrideName: 'loading');
+
+    expect($rendered)
+        ->toContain("Flux::classes('shrink-0 animate-spin')")
+        ->toContain('overriding the icon Flux draws itself');
 });
 
 it('finds all three forms an icon name is written in', function (): void {
@@ -86,7 +95,7 @@ it('renders an override matching the template the kit already uses', function ()
 });
 
 it('notes why an alias override exists', function (): void {
-    $rendered = (new OverrideGenerator)->render('x', alias: 'x');
+    $rendered = (new OverrideGenerator)->render('x', overrideName: 'x-mark');
 
     expect($rendered)->toContain('overriding the Heroicons name Flux resolves internally');
 });

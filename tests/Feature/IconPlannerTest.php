@@ -86,10 +86,29 @@ it('writes an override for every icon when going all Lucide', function (string $
 
     $remaining = array_keys((new IconScanner)->scan($project));
 
-    // Every name still referenced must resolve to an override we wrote, apart
-    // from Flux's own spinner which is deliberately left alone.
-    expect(array_values(array_diff($remaining, $overrides, ['loading'])))->toBe([]);
+    // Every name still referenced must resolve to an override we wrote —
+    // including `loading`, which keeps Flux's name but gets Lucide artwork.
+    expect(array_values(array_diff($remaining, $overrides)))->toBe([]);
 })->with(starterKits());
+
+it('overrides the Flux spinner in place, still spinning', function (): void {
+    $root = copyFixture('livewire');
+    $project = (new ProjectDetector)->detect($root);
+
+    [$plan, $report] = planIcons($root, IconStrategy::Lucide);
+
+    expect($plan->describe())
+        ->toContain('  write  resources/views/flux/icon/loading.blade.php (Lucide "loader-circle", in place of Flux\'s own)');
+
+    (new Applier)->apply($plan, $project, $report);
+
+    // Flux renders `flux:icon.loading` from inside its own components, so the
+    // usages have to keep the name the override is written at.
+    expect($project->get('resources/views/flux/icon/loading.blade.php'))
+        ->toContain("Flux::classes('shrink-0 animate-spin')")
+        ->and(array_keys((new IconScanner)->scan($project)))->toContain('loading')
+        ->and($plan->describe())->not->toContain('loader-circle.blade.php');
+});
 
 it('aliases the Heroicons name so Flux internals follow the switch', function (): void {
     [$plan] = planIcons(requireFixture('livewire'), IconStrategy::Lucide);

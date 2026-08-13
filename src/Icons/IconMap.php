@@ -73,15 +73,32 @@ final class IconMap
     }
 
     /**
-     * Names Flux owns rather than resolving from an icon set.
+     * Names Flux owns rather than resolving from an icon set, and the Lucide
+     * artwork that stands in for each one.
      *
-     * `flux:icon.loading` is Flux's own spinner. Translating it would replace a
-     * working animation with a static glyph.
+     * `flux:icon.loading` is Flux's own spinner, not a Heroicon, and Flux renders
+     * it from inside `flux:button` as well as from application code. So it is
+     * overridden in place rather than renamed: an override at Flux's own name
+     * reaches both, where a rename would only reach the views refit can rewrite
+     * and leave the two spinners drawn differently.
      *
-     * @var list<string>
+     * Lucide's `loader-circle` is a still drawing, so the override also needs the
+     * class in {@see EXTRA_CLASSES} to keep spinning.
+     *
+     * @var array<string, string>
      */
-    public const array RESERVED = [
-        'loading',
+    public const array FLUX_OWNED = [
+        'loading' => 'loader-circle',
+    ];
+
+    /**
+     * Classes an override needs on top of the ones the kit's template applies,
+     * keyed by the name the override file is written at.
+     *
+     * @var array<string, string>
+     */
+    public const array EXTRA_CLASSES = [
+        'loading' => 'animate-spin',
     ];
 
     /**
@@ -142,8 +159,9 @@ final class IconMap
      * Icons Flux renders from inside its own components.
      *
      * Refit cannot rewrite Flux's vendor code, so going all-Lucide means writing
-     * an override at the *Heroicons* name for each of these — that is the only way
-     * a `flux:select` chevron or a `viewable` input's eye follows the switch.
+     * an override at the name Flux asks for — the *Heroicons* one for all but
+     * `loading`, which is {@see FLUX_OWNED}. That is the only way a `flux:select`
+     * chevron, a `viewable` input's eye, or a button's spinner follows the switch.
      *
      * Used as a fallback when the installed Flux package cannot be scanned.
      *
@@ -159,6 +177,7 @@ final class IconMap
         'exclamation-triangle',
         'eye',
         'eye-slash',
+        'loading',
         'magnifying-glass',
         'minus',
         'slash',
@@ -167,7 +186,7 @@ final class IconMap
 
     public static function toLucide(string $heroicon): ?string
     {
-        return self::HEROICONS_TO_LUCIDE[$heroicon] ?? null;
+        return self::HEROICONS_TO_LUCIDE[$heroicon] ?? self::FLUX_OWNED[$heroicon] ?? null;
     }
 
     public static function toHeroicons(string $lucide): ?string
@@ -175,9 +194,12 @@ final class IconMap
         return self::LUCIDE_TO_HEROICONS[$lucide] ?? null;
     }
 
-    public static function isReserved(string $name): bool
+    /**
+     * Is this a name Flux draws itself, which keeps its name when overridden?
+     */
+    public static function isFluxOwned(string $name): bool
     {
-        return in_array($name, self::RESERVED, true);
+        return array_key_exists($name, self::FLUX_OWNED);
     }
 
     /**
