@@ -278,9 +278,41 @@ class RefitCommand extends Command
 
         $this->components->info('Refit done. Review the diff before committing.');
 
-        if ($this->option('answers') === null && confirm(label: 'Remove refit from this project now?', default: true)) {
-            $this->components->info('Run: composer remove --dev onelegstudios/laravel-refit');
+        if ($this->option('answers') !== null) {
+            return;
         }
+
+        if (! confirm(label: 'Remove refit from this project now?', default: true)) {
+            return;
+        }
+
+        $this->removePublishedConfig();
+
+        $this->components->info('Run: composer remove --dev onelegstudios/laravel-refit');
+    }
+
+    /**
+     * Delete the published config, if this project has one.
+     *
+     * It only ever configured refit itself, so once the package is on its way
+     * out the file is a config entry pointing at classes that will not be
+     * autoloadable any more.
+     */
+    private function removePublishedConfig(): void
+    {
+        $path = $this->laravel->configPath('refit.php');
+
+        if (! is_file($path)) {
+            return;
+        }
+
+        if (! @unlink($path)) {
+            $this->components->warn('Could not delete config/refit.php — remove it by hand.');
+
+            return;
+        }
+
+        $this->components->info('Deleted config/refit.php.');
     }
 
     /**
