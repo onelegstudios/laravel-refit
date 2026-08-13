@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Onelegstudios\Refit\Tasks\KeepOneAuthLayout;
+use Onelegstudios\Refit\Tasks\MoveToastsToTop;
 use Onelegstudios\Refit\Tasks\NamespaceComponents;
 use Onelegstudios\Refit\Tasks\PromotePartialsToComponents;
 use Onelegstudios\Refit\Tasks\RemoveFluxProSource;
@@ -27,6 +28,7 @@ return [
     'tasks' => [
         PromotePartialsToComponents::class,
         NamespaceComponents::class,
+        MoveToastsToTop::class,
         KeepOneAuthLayout::class,
         RemoveFluxProSource::class,
     ],

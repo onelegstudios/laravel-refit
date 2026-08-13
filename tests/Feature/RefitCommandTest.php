@@ -125,7 +125,7 @@ it('leaves every view structurally intact after a full run', function (string $k
         '--force' => true,
         '--answers' => json_encode([
             'icons' => 'lucide',
-            'tasks' => ['partials-to-components', 'namespace-components', 'single-auth-layout', 'remove-flux-pro-source'],
+            'tasks' => ['partials-to-components', 'namespace-components', 'toasts-at-top', 'single-auth-layout', 'remove-flux-pro-source'],
         ]),
     ])->assertSuccessful();
 

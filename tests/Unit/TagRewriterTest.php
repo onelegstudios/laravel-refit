@@ -77,6 +77,38 @@ it('rewrites a dotted tag suffix', function (): void {
     expect($result)->toBe('<flux:icon.trash-2 class="size-4" /><flux:icon.loading />');
 });
 
+it('adds a missing attribute straight after the tag name', function (): void {
+    $result = $this->rewriter->addAttribute(
+        '<flux:toast.group>'.PHP_EOL.'    <flux:toast />'.PHP_EOL.'</flux:toast.group>',
+        'flux:toast.group',
+        'position',
+        'top end',
+    );
+
+    expect($result)->toBe(
+        '<flux:toast.group position="top end">'.PHP_EOL.'    <flux:toast />'.PHP_EOL.'</flux:toast.group>',
+    );
+});
+
+it('leaves a tag that already carries the attribute alone', function (): void {
+    $source = '<flux:toast.group position="bottom center"><flux:toast.group :position="$position">';
+
+    $result = $this->rewriter->addAttribute($source, 'flux:toast.group', 'position', 'top end');
+
+    expect($result)->toBe($source);
+});
+
+it('adds the attribute only to the tag it was given', function (): void {
+    $result = $this->rewriter->addAttribute(
+        '<flux:toast.group><flux:toast.group.item /></flux:toast.group>',
+        'flux:toast.group',
+        'position',
+        'top end',
+    );
+
+    expect($result)->toBe('<flux:toast.group position="top end"><flux:toast.group.item /></flux:toast.group>');
+});
+
 it('applies several edits to one tag without corrupting offsets', function (): void {
     $result = $this->rewriter->rewriteAttributeValues(
         '<flux:button icon="plus" icon-trailing="chevron-down" />',

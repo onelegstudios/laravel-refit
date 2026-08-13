@@ -10,6 +10,7 @@ use Onelegstudios\Refit\Project\Project;
 use Onelegstudios\Refit\Project\ProjectDetector;
 use Onelegstudios\Refit\Refit;
 use Onelegstudios\Refit\Tasks\KeepOneAuthLayout;
+use Onelegstudios\Refit\Tasks\MoveToastsToTop;
 use Onelegstudios\Refit\Tasks\NamespaceComponents;
 use Onelegstudios\Refit\Tasks\PromotePartialsToComponents;
 use Onelegstudios\Refit\Tasks\RemoveFluxProSource;
@@ -40,6 +41,7 @@ it('registers the configured tasks', function (): void {
         ->toBe([
             'partials-to-components',
             'namespace-components',
+            'toasts-at-top',
             'single-auth-layout',
             'remove-flux-pro-source',
         ]);
@@ -142,6 +144,49 @@ it('keeps only the auth layout the application renders', function (): void {
     expect($project->exists('resources/views/layouts/auth/simple.blade.php'))->toBeTrue()
         ->and($project->exists('resources/views/layouts/auth/card.blade.php'))->toBeFalse()
         ->and($project->exists('resources/views/layouts/auth/split.blade.php'))->toBeFalse();
+});
+
+it('positions every toast group at the top', function (string $kit): void {
+    [$project] = runTask(new MoveToastsToTop, $kit);
+
+    $layouts = array_values(array_filter(
+        $project->blades(),
+        fn (string $path): bool => str_contains($project->get($path), '<flux:toast.group'),
+    ));
+
+    expect($layouts)->not->toBeEmpty();
+
+    foreach ($layouts as $path) {
+        expect($project->get($path))->toContain('<flux:toast.group position="top end">');
+    }
+})->with(starterKits());
+
+it('has nothing left to do once the toasts are at the top', function (): void {
+    [$project] = runTask(new MoveToastsToTop, 'livewire');
+
+    expect((new MoveToastsToTop)->appliesTo($project))->toBeFalse();
+});
+
+it('keeps a toast group that already chose a position', function (): void {
+    $root = copyFixture('livewire');
+    $layout = 'resources/views/layouts/app/sidebar.blade.php';
+
+    file_put_contents($root.'/'.$layout, str_replace(
+        '<flux:toast.group>',
+        '<flux:toast.group position="bottom center">',
+        (string) file_get_contents($root.'/'.$layout),
+    ));
+
+    $project = (new ProjectDetector)->detect($root);
+    $plan = new Plan;
+    $report = new Report;
+
+    (new MoveToastsToTop)->contribute($plan, $project, $report);
+    (new Applier)->apply($plan, $project, $report);
+
+    expect($project->get($layout))
+        ->toContain('<flux:toast.group position="bottom center">')
+        ->not->toContain('top end');
 });
 
 it('drops the Flux Pro source line', function (): void {

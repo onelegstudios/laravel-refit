@@ -102,6 +102,7 @@ something that would do nothing.
 | --- | --- |
 | Structure | Use components instead of partials |
 | Structure | Group components into folders |
+| Structure | Show toasts at the top of the screen |
 | Cleanup | Delete the unused auth layouts |
 | Cleanup | Remove the Flux Pro `@source` line from `app.css` |
 
@@ -138,6 +139,18 @@ use Onelegstudios\Refit\Tasks\NamespaceComponents;
 
 Refit::task(new NamespaceComponents(['app-logo' => 'marketing/logo'], fallback: 'shared'));
 ```
+
+The kit renders a bare `<flux:toast.group>` in every layout, which leaves Flux on
+its `bottom end` default. Moving the toasts up adds the position the group was
+missing, and nothing else:
+
+```blade
+<flux:toast.group position="top end">
+    <flux:toast />
+</flux:toast.group>
+```
+
+A group that already carries a `position` is left as it is.
 
 ### Running without prompts
 
