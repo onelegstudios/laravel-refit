@@ -85,6 +85,36 @@ final class TagRewriter
     }
 
     /**
+     * Add an attribute to every tag with the given name that lacks it.
+     *
+     * A tag that already names the attribute — literally or bound — is left
+     * alone: the value sitting there is a decision the application has already
+     * made, and overruling it would be a rewrite the user did not ask for.
+     */
+    public function addAttribute(string $source, string $name, string $attribute, string $value): string
+    {
+        $edits = new Edits;
+
+        foreach ($this->parser->parse($source, $name) as $tag) {
+            if ($tag->name !== $name) {
+                continue;
+            }
+
+            if ($tag->has($attribute) || $tag->has(':'.$attribute)) {
+                continue;
+            }
+
+            $edits->replace(
+                $tag->nameOffset() + strlen($name),
+                0,
+                sprintf(' %s="%s"', $attribute, $value),
+            );
+        }
+
+        return $edits->apply($source);
+    }
+
+    /**
      * Rewrite the dotted suffix of tags such as `<flux:icon.home />`.
      *
      * @param  callable(string): (string|null)  $callback
