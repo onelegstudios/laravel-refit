@@ -63,6 +63,30 @@ it('turns partials into components and rewrites the includes', function (): void
         ->not->toContain("@include('partials.head')");
 });
 
+it('removes the emptied partials directory', function (string $kit): void {
+    [$project, $report] = runTask(new PromotePartialsToComponents, $kit);
+
+    expect($project->exists('resources/views/partials'))->toBeFalse()
+        ->and($report->notes())->toContain('Removed the now empty resources/views/partials directory');
+})->with(starterKits());
+
+it('keeps the partials directory when something unplanned is left in it', function (): void {
+    $root = copyFixture('livewire');
+    $project = (new ProjectDetector)->detect($root);
+    $plan = new Plan;
+    $report = new Report;
+
+    (new PromotePartialsToComponents)->contribute($plan, $project, $report);
+
+    file_put_contents($project->path('resources/views/partials/notes.md'), 'keep me');
+
+    (new Applier)->apply($plan, $project, $report);
+
+    expect($project->exists('resources/views/partials/notes.md'))->toBeTrue()
+        ->and($report->warnings())
+        ->toContain('Left [resources/views/partials] in place — it still holds notes.md.');
+});
+
 it('leaves no partial include behind', function (string $kit): void {
     [$project] = runTask(new PromotePartialsToComponents, $kit);
 
