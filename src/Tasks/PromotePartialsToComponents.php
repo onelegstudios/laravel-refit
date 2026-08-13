@@ -6,6 +6,7 @@ namespace Onelegstudios\Refit\Tasks;
 
 use Onelegstudios\Refit\Contracts\Task;
 use Onelegstudios\Refit\Plan\Actions\MoveFile;
+use Onelegstudios\Refit\Plan\Actions\RemoveDirectoryIfEmpty;
 use Onelegstudios\Refit\Plan\Actions\ReplaceIncludeWithComponent;
 use Onelegstudios\Refit\Plan\Plan;
 use Onelegstudios\Refit\Plan\Report;
@@ -18,7 +19,8 @@ use Onelegstudios\Refit\Project\Project;
  * The kit ships two: `partials.head` and `partials.settings-heading`, pulled in
  * with `@include` 42 times between them. Both are self-contained, so the move is
  * mechanical — an `@include` that passes data is reported and left alone by
- * {@see ReplaceIncludeWithComponent}.
+ * {@see ReplaceIncludeWithComponent}. Once every partial has moved out, the
+ * directory itself goes too, unless something unplanned is still sitting in it.
  */
 final class PromotePartialsToComponents implements Task
 {
@@ -62,6 +64,8 @@ final class PromotePartialsToComponents implements Task
                 'x-'.$name,
             ));
         }
+
+        $plan->add(Stage::Move, new RemoveDirectoryIfEmpty(self::DIRECTORY));
     }
 
     /**
