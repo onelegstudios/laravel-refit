@@ -87,6 +87,37 @@ it('rejects malformed answers instead of guessing', function (): void {
         ->assertFailed();
 });
 
+it('deletes the published config when it is asked to remove itself', function (): void {
+    $root = useKit('livewire');
+
+    copy(dirname(__DIR__, 2).'/config/refit.php', $root.'/config/refit.php');
+
+    $this->artisan('refit', ['--force' => true])
+        ->expectsQuestion('The kit ships Heroicons with a few Lucide icons vendored in. What would you like?', 'keep')
+        ->expectsQuestion('Which jobs would you like to run?', ['remove-flux-pro-source'])
+        ->expectsQuestion('Apply these changes?', true)
+        ->expectsQuestion('Remove refit from this project now?', true)
+        ->expectsOutputToContain('Deleted config/refit.php.')
+        ->assertSuccessful();
+
+    expect(is_file($root.'/config/refit.php'))->toBeFalse();
+});
+
+it('leaves the published config alone when refit is staying', function (): void {
+    $root = useKit('livewire');
+
+    copy(dirname(__DIR__, 2).'/config/refit.php', $root.'/config/refit.php');
+
+    $this->artisan('refit', ['--force' => true])
+        ->expectsQuestion('The kit ships Heroicons with a few Lucide icons vendored in. What would you like?', 'keep')
+        ->expectsQuestion('Which jobs would you like to run?', ['remove-flux-pro-source'])
+        ->expectsQuestion('Apply these changes?', true)
+        ->expectsQuestion('Remove refit from this project now?', false)
+        ->assertSuccessful();
+
+    expect(is_file($root.'/config/refit.php'))->toBeTrue();
+});
+
 it('leaves every view structurally intact after a full run', function (string $kit): void {
     $root = useKit($kit);
 

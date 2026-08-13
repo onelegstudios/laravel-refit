@@ -193,6 +193,9 @@ jobs from tripping over one another.
 php artisan vendor:publish --tag="refit-config"
 ```
 
+Say yes when refit offers to remove itself and it deletes the published config
+on its way out — it only ever configured refit.
+
 ## Supported starter kits
 
 Every variation `laravel new` can generate for the Livewire kit:
