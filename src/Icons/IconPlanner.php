@@ -107,10 +107,6 @@ final class IconPlanner
         $overrides = [];
 
         foreach ($this->scanner->scan($project) as $name => $paths) {
-            if (IconMap::isReserved($name)) {
-                continue;
-            }
-
             // Names the kit already vendors as Lucide need art, but no rewrite.
             if ($this->generator->has($name) && IconMap::toLucide($name) === null) {
                 $overrides[$name] = $name;
@@ -144,6 +140,14 @@ final class IconPlanner
                 continue;
             }
 
+            // Flux draws this one itself, so the override keeps Flux's name and
+            // the usages are left as they are.
+            if (IconMap::isFluxOwned($name)) {
+                $overrides[$name] = $lucide;
+
+                continue;
+            }
+
             if ($lucide !== $name) {
                 $renames[$name] = $lucide;
             }
@@ -152,18 +156,14 @@ final class IconPlanner
         }
 
         foreach ($this->fluxInternals($project, $report) as $name) {
-            if (IconMap::isReserved($name)) {
-                continue;
-            }
-
             $lucide = IconMap::toLucide($name);
 
             if ($lucide === null || ! $this->generator->has($lucide)) {
                 continue;
             }
 
-            // Keyed by the Heroicons name: Flux's own markup asks for that, and
-            // refit cannot rewrite code inside the vendor directory.
+            // Keyed by the name Flux's own markup asks for, since refit cannot
+            // rewrite code inside the vendor directory.
             $overrides[$name] = $lucide;
         }
 
@@ -172,12 +172,16 @@ final class IconPlanner
         foreach ($overrides as $filename => $art) {
             $plan->add(Stage::Write, new WriteFile(
                 sprintf('%s/%s.blade.php', self::OVERRIDE_DIRECTORY, $filename),
-                $this->generator->render($art, alias: $filename === $art ? null : $art),
+                $this->generator->render($art, overrideName: $filename),
                 sprintf(
                     'write  %s/%s.blade.php%s',
                     self::OVERRIDE_DIRECTORY,
                     $filename,
-                    $filename === $art ? '' : sprintf(' (Lucide "%s", for Flux internals)', $art),
+                    $filename === $art ? '' : sprintf(
+                        ' (Lucide "%s", %s)',
+                        $art,
+                        IconMap::isFluxOwned($filename) ? 'in place of Flux\'s own' : 'for Flux internals',
+                    ),
                 ),
             ));
         }
@@ -197,8 +201,7 @@ final class IconPlanner
         if ($scanned !== []) {
             $untranslatable = array_values(array_filter(
                 $scanned,
-                static fn (string $name): bool => ! IconMap::isReserved($name)
-                    && IconMap::toLucide($name) === null,
+                static fn (string $name): bool => IconMap::toLucide($name) === null,
             ));
 
             if ($untranslatable !== []) {

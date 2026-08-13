@@ -255,7 +255,8 @@ function parseOptions(array $arguments): array
  *
  * Both directions of the map matter: the values are the icons a Heroicons name
  * translates to, and the keys of the reverse map are the ones the starter kit
- * vendors in and refit has to be able to re-emit.
+ * vendors in and refit has to be able to re-emit. The names Flux draws itself
+ * are overridden with Lucide artwork too, so their stand-ins are needed as well.
  *
  * @return list<string>
  */
@@ -264,6 +265,7 @@ function requiredIcons(): array
     $names = array_unique(array_merge(
         array_values(IconMap::HEROICONS_TO_LUCIDE),
         array_keys(IconMap::LUCIDE_TO_HEROICONS),
+        array_values(IconMap::FLUX_OWNED),
     ));
 
     sort($names);
@@ -552,7 +554,7 @@ function listIcons(): void
 {
     $aliases = [];
 
-    foreach (IconMap::HEROICONS_TO_LUCIDE as $heroicon => $lucide) {
+    foreach ([...IconMap::HEROICONS_TO_LUCIDE, ...IconMap::FLUX_OWNED] as $heroicon => $lucide) {
         $aliases[$lucide][] = $heroicon;
     }
 

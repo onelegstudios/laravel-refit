@@ -23,7 +23,14 @@ use RuntimeException;
  */
 final class OverrideGenerator
 {
-    private const string PLACEHOLDER = '__PATHS__';
+    private const string PATHS_PLACEHOLDER = '__PATHS__';
+
+    private const string CLASSES_PLACEHOLDER = '__CLASSES__';
+
+    /**
+     * The classes every override starts from, before {@see IconMap::EXTRA_CLASSES}.
+     */
+    private const string BASE_CLASSES = 'shrink-0';
 
     public function __construct(
         private readonly string $iconDirectory = __DIR__.'/../../resources/icons/lucide',
@@ -38,12 +45,14 @@ final class OverrideGenerator
     /**
      * Render the Flux override for a Lucide icon.
      *
-     * @param  string|null  $alias  The Heroicons name this file is standing in for,
-     *                              noted in the output so the reason it exists is
-     *                              obvious months later.
+     * @param  string|null  $overrideName  The name the file is written at, when it
+     *                                     is not the Lucide one. Noted in the
+     *                                     output so the reason the file stands in
+     *                                     for another name is obvious months later.
      */
-    public function render(string $lucideName, ?string $alias = null): string
+    public function render(string $lucideName, ?string $overrideName = null): string
     {
+        $overrideName ??= $lucideName;
         $svg = $this->svg($lucideName);
         $stub = @file_get_contents($this->stubPath);
 
@@ -51,20 +60,38 @@ final class OverrideGenerator
             throw new RuntimeException("Unable to read the icon stub at [{$this->stubPath}].");
         }
 
-        $rendered = str_replace(self::PLACEHOLDER, $this->paths($svg), $stub);
+        $rendered = str_replace(
+            [self::PATHS_PLACEHOLDER, self::CLASSES_PLACEHOLDER],
+            [$this->paths($svg), $this->classes($overrideName)],
+            $stub,
+        );
 
-        if ($alias === null) {
+        if ($overrideName === $lucideName) {
             return $rendered;
         }
 
         return str_replace(
             '{{-- Credit: Lucide (https://lucide.dev) --}}',
             sprintf(
-                "{{-- Credit: Lucide (https://lucide.dev) --}}\n{{-- Lucide's \"%s\", overriding the Heroicons name Flux resolves internally. --}}",
+                "{{-- Credit: Lucide (https://lucide.dev) --}}\n{{-- Lucide's \"%s\", overriding the %s. --}}",
                 $lucideName,
+                IconMap::isFluxOwned($overrideName)
+                    ? 'icon Flux draws itself'
+                    : 'Heroicons name Flux resolves internally',
             ),
             $rendered,
         );
+    }
+
+    /**
+     * The class list the override applies, including anything the artwork alone
+     * cannot carry — Lucide's spinner is a still drawing, so it needs `animate-spin`.
+     */
+    private function classes(string $overrideName): string
+    {
+        $extra = IconMap::EXTRA_CLASSES[$overrideName] ?? null;
+
+        return $extra === null ? self::BASE_CLASSES : self::BASE_CLASSES.' '.$extra;
     }
 
     private function svg(string $lucideName): string
