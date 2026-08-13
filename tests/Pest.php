@@ -45,6 +45,28 @@ function requireFixture(string $kit): string
 }
 
 /**
+ * The stubs of a licensed Flux edition inside a fixture, or a skip.
+ *
+ * `livewire/flux-pro` needs a licence, so it is absent from most checkouts and
+ * from every fork's CI run — GitHub does not pass secrets to workflows triggered
+ * from a fork. Tests that need it skip rather than fail, which keeps the suite
+ * green for contributors who cannot install it.
+ *
+ * The recorded names in resources/flux/internal-icons.json are what refit falls
+ * back to, and those are asserted without a licence in tests/Unit/IconsTest.php.
+ */
+function requireFluxPro(string $kit): string
+{
+    $stubs = requireFixture($kit).'/vendor/livewire/flux-pro/stubs';
+
+    if (! is_dir($stubs)) {
+        test()->markTestSkipped('Flux Pro is not installed in the fixture — this needs a licence, so it is optional.');
+    }
+
+    return $stubs;
+}
+
+/**
  * A throwaway copy of a fixture, cleaned up when the test process ends.
  */
 function copyFixture(string $kit): string

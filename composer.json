@@ -72,6 +72,12 @@
     "icons:check": [
       "@php bin/download-icons.php --check"
     ],
+    "flux:internals": [
+      "@php bin/scan-flux-internals.php"
+    ],
+    "flux:internals:check": [
+      "@php bin/scan-flux-internals.php --check"
+    ],
     "refresh": [
       "Composer\\Config::disableProcessTimeout",
       "@icons",

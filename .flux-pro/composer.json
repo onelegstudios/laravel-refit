@@ -1,0 +1,19 @@
+{
+  "$schema": "https://getcomposer.org/schema.json",
+  "description": "Sidecar install of Flux, used only to record which icons Flux renders internally. Not part of refit's own dependencies.",
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://composer.fluxui.dev"
+    }
+  ],
+  "require": {
+    "livewire/flux": "^2.0",
+    "livewire/flux-pro": "^2.0"
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "config": {
+    "sort-packages": true
+  }
+}

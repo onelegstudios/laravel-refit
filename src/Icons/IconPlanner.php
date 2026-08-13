@@ -214,8 +214,11 @@ final class IconPlanner
             return $scanned;
         }
 
-        $report->note('Flux is not installed here, so refit used its built-in list of the icons Flux renders internally.');
+        // Nothing to scan. The recorded list covers both editions, so a project
+        // that turns out to be free-Flux-only gets a couple of overrides it never
+        // needed — harmless, where a missing one leaves a stray Heroicon behind.
+        $report->note('Flux is not installed here, so refit used its recorded list of the icons Flux renders internally.');
 
-        return IconMap::FLUX_INTERNAL_FALLBACK;
+        return FluxInternals::names();
     }
 }

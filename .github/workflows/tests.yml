@@ -6,6 +6,13 @@ on:
       - main
       - "*.x"
   pull_request:
+  # Catches the one kind of drift no pull request can: Flux shipping a release
+  # that renders an icon the recorded manifest has never seen. Scheduled runs
+  # execute in the base repository's context, so the licence secrets resolve and
+  # no untrusted code is involved.
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -16,6 +23,10 @@ concurrency:
 
 jobs:
   tests:
+    # The weekly run exists for the Flux drift check below, not to re-test the
+    # dependency matrix. Drop this condition to make it a dependency canary too.
+    if: github.event_name != 'schedule'
+
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -73,3 +84,63 @@ jobs:
       - name: Test Suite (Windows)
         if: runner.os == 'Windows'
         run: vendor/bin/pest
+
+  # Flux Pro is a licensed package, so this is the one job that cannot run
+  # everywhere. GitHub withholds secrets from workflows triggered by a fork, so
+  # the condition below keeps it off contributor pull requests instead of
+  # failing them with a 401 nobody outside the repository can fix.
+  #
+  # Nothing else depends on it: the `tests` job above asserts against the
+  # recorded resources/flux/internal-icons.json and passes without a licence.
+  # This job's job is to catch that manifest going stale when Flux ships a
+  # release that renders something new.
+  flux-pro:
+    name: Flux Pro internals
+    runs-on: ubuntu-latest
+
+    # Everything except a pull request from a fork, which GitHub gives no
+    # secrets and so could only fail with a 401 no contributor can fix.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        with:
+          php-version: 8.4
+          extensions: dom, curl, libxml, mbstring, zip, fileinfo
+          tools: composer:v2
+          coverage: none
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-interaction --no-progress --no-scripts
+
+      # Skipped rather than failed when the licence is not configured, so the
+      # workflow stays green on a clone that has no Flux Pro secrets at all.
+      - name: Check for a licence
+        id: licence
+        env:
+          FLUX_USERNAME: ${{ secrets.FLUX_USERNAME }}
+        run: |
+          if [ -n "$FLUX_USERNAME" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "No Flux Pro licence configured — skipping." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      # .flux-pro/composer.json is committed; only what it installs is ignored.
+      # The root `composer install` above never reads it, which is the whole
+      # point — naming composer.fluxui.dev in the root manifest would 401 every
+      # unlicensed install, including this workflow's own dependencies.
+      - name: Install Flux Pro
+        if: steps.licence.outputs.present == 'true'
+        env:
+          COMPOSER_AUTH: '{"http-basic":{"composer.fluxui.dev":{"username":"${{ secrets.FLUX_USERNAME }}","password":"${{ secrets.FLUX_LICENSE_KEY }}"}}}'
+        run: composer install --working-dir=.flux-pro --prefer-dist --no-interaction --no-progress
+
+      - name: Check the recorded internals
+        if: steps.licence.outputs.present == 'true'
+        run: composer flux:internals:check
