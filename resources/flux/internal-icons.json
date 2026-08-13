@@ -1,0 +1,49 @@
+{
+    "generated_at": "2026-08-13T12:14:10+00:00",
+    "editions": {
+        "livewire/flux": {
+            "version": "v2.16.0",
+            "scanned": true,
+            "icons": [
+                "check",
+                "chevron-down",
+                "chevron-left",
+                "chevron-right",
+                "chevron-up",
+                "clipboard-document",
+                "clipboard-document-check",
+                "exclamation-triangle",
+                "eye",
+                "eye-slash",
+                "loading",
+                "magnifying-glass",
+                "minus",
+                "slash",
+                "x-mark"
+            ]
+        },
+        "livewire/flux-pro": {
+            "version": "2.16.0",
+            "scanned": true,
+            "icons": [
+                "calendar",
+                "check",
+                "chevron-down",
+                "chevron-left",
+                "chevron-right",
+                "chevron-up-down",
+                "clipboard-document",
+                "clipboard-document-check",
+                "clock",
+                "cloud-arrow-up",
+                "document",
+                "eye-dropper",
+                "loading",
+                "magnifying-glass",
+                "minus",
+                "plus",
+                "x-mark"
+            ]
+        }
+    }
+}

@@ -86,6 +86,12 @@ Icon names are read in all three forms the kit writes them:
 An icon refit has no translation for is reported with the file it appears in,
 never silently dropped or guessed at.
 
+Which icons Flux renders internally is read from the Flux package installed
+alongside your project, so it stays right as Flux changes — and it sees the
+`livewire/flux-pro` stubs when you have a licence. When there is nothing to scan,
+refit falls back to the list recorded in
+[`resources/flux/internal-icons.json`](resources/flux/internal-icons.json).
+
 ### Jobs
 
 After the icon question you pick from a list of structural jobs. Only jobs that
@@ -221,6 +227,39 @@ been downloaded:
 ```bash
 composer fixtures
 ```
+
+### Contributing without a Flux Pro licence
+
+You do not need one. Refit has no dependency on Flux — free or Pro — and the full
+suite passes without either installed. Anything that needs the licensed
+`livewire/flux-pro` stubs skips itself the same way the fixture tests do.
+
+The one thing a licence unlocks is refreshing the record of which icons Flux
+renders internally. That reads a sidecar install, set up once:
+
+```bash
+composer install --working-dir=.flux-pro
+```
+
+`.flux-pro/composer.json` is committed; what it installs is gitignored. It is a
+separate manifest that the root `composer install` never reads, and that
+separation is deliberate: Composer fetches every configured repository's
+`packages.json` before resolving anything, so naming `composer.fluxui.dev` in
+refit's own `composer.json` would fail the whole install for anyone without a
+licence — costing them Pest and PHPStan, not just Flux. Keeping it out here is
+what lets a fork run `composer install` at all.
+
+Then record what Flux renders internally:
+
+```bash
+composer flux:internals
+```
+
+Editions that are not installed keep whatever the manifest already records, so
+running this with only free Flux refreshes those names and leaves the Pro ones
+alone. `composer flux:internals:check` reports drift without writing, and only
+fails when the icon set has actually changed. Both accept
+`-- --project=../my-app` to read some other project instead of the sidecar.
 
 ## Changelog
 

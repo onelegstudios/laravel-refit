@@ -67,13 +67,27 @@ final class IconScanner
 
                 $value = (string) $attribute->value;
 
-                if ($value !== '') {
+                if ($value !== '' && ! self::isInterpolated($value)) {
                     $names[] = $value;
                 }
             }
         }
 
         return array_values(array_unique($names));
+    }
+
+    /**
+     * Does this attribute value interpolate Blade rather than name an icon?
+     *
+     * Flux Pro passes its own prop through in the unbound form —
+     * `<flux:icon name="{{ $icon }}" />` in `file-item`, `file-upload/dropzone`
+     * and others — which the bound check never sees. Left in, `{{ $icon }}`
+     * would be recorded as a name and reported as untranslatable on every Pro
+     * project refit touches.
+     */
+    private static function isInterpolated(string $value): bool
+    {
+        return str_contains($value, '{{') || str_contains($value, '{!!');
     }
 
     /**
@@ -103,6 +117,10 @@ final class IconScanner
             );
 
             foreach ($defaults[3] as $name) {
+                if (self::isInterpolated($name)) {
+                    continue;
+                }
+
                 $names[] = $name;
             }
         }
@@ -111,12 +129,27 @@ final class IconScanner
     }
 
     /**
+     * Where each Flux edition keeps the Blade stubs refit reads, relative to the
+     * project root.
+     *
+     * `flux-pro` is a licensed package, so it is absent from most installs —
+     * including every contributor checkout without a licence. Its absence is
+     * ordinary, not an error.
+     *
+     * @var list<string>
+     */
+    public const array STUB_DIRECTORIES = [
+        'vendor/livewire/flux/stubs',
+        'vendor/livewire/flux-pro/stubs',
+    ];
+
+    /**
      * Icon names the installed Flux package renders from inside its own
      * components, discovered by reading its Blade stubs.
      *
      * Scanning beats guessing: it stays correct as Flux changes. When the package
      * is not installed — running against a fixture, for instance — the caller
-     * falls back to {@see IconMap::FLUX_INTERNAL_FALLBACK}.
+     * falls back to the recorded list {@see FluxInternals} reads.
      *
      * @return list<string>
      */
@@ -124,31 +157,53 @@ final class IconScanner
     {
         $names = [];
 
-        foreach (['vendor/livewire/flux/stubs', 'vendor/livewire/flux-pro/stubs'] as $relative) {
-            $directory = $project->path($relative);
+        foreach (self::STUB_DIRECTORIES as $relative) {
+            foreach ($this->scanStubDirectory($project->path($relative)) as $name) {
+                $names[] = $name;
+            }
+        }
 
-            if (! is_dir($directory)) {
+        $names = array_values(array_unique($names));
+
+        sort($names);
+
+        return $names;
+    }
+
+    /**
+     * Every icon name one directory of Flux stubs renders.
+     *
+     * Split out from {@see scanFluxPackage()} so `bin/scan-flux-internals.php`
+     * can read a licensed install through the same parser the command uses. A
+     * missing directory yields nothing.
+     *
+     * @return list<string>
+     */
+    public function scanStubDirectory(string $directory): array
+    {
+        if (! is_dir($directory)) {
+            return [];
+        }
+
+        $names = [];
+
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($directory, FilesystemIterator::SKIP_DOTS),
+        );
+
+        foreach ($files as $file) {
+            if (! $file->isFile() || ! str_ends_with($file->getFilename(), '.blade.php')) {
                 continue;
             }
 
-            $files = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator($directory, FilesystemIterator::SKIP_DOTS),
-            );
+            $contents = @file_get_contents($file->getPathname());
 
-            foreach ($files as $file) {
-                if (! $file->isFile() || ! str_ends_with($file->getFilename(), '.blade.php')) {
-                    continue;
-                }
+            if ($contents === false) {
+                continue;
+            }
 
-                $contents = @file_get_contents($file->getPathname());
-
-                if ($contents === false) {
-                    continue;
-                }
-
-                foreach ([...$this->scanSource($contents), ...$this->scanPropDefaults($contents)] as $name) {
-                    $names[] = $name;
-                }
+            foreach ([...$this->scanSource($contents), ...$this->scanPropDefaults($contents)] as $name) {
+                $names[] = $name;
             }
         }
 

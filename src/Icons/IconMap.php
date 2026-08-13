@@ -108,6 +108,7 @@ final class IconMap
         'arrow-path' => 'refresh-cw',
         'arrow-right-start-on-rectangle' => 'log-out',
         'bars-2' => 'menu',
+        'calendar' => 'calendar',
         'check' => 'check',
         'chevron-down' => 'chevron-down',
         'chevron-left' => 'chevron-left',
@@ -116,12 +117,18 @@ final class IconMap
         'chevron-up-down' => 'chevrons-up-down',
         'clipboard-document' => 'clipboard',
         'clipboard-document-check' => 'clipboard-check',
+        'clock' => 'clock',
+        'cloud-arrow-up' => 'cloud-upload',
         'cog' => 'settings',
         'computer-desktop' => 'monitor',
+        // Heroicons' plain page, so Lucide's plain `file` rather than `file-text`.
+        'document' => 'file',
         'document-duplicate' => 'copy',
         'envelope' => 'mail',
         'exclamation-triangle' => 'triangle-alert',
         'eye' => 'eye',
+        // Lucide files the eyedropper under the tool's name.
+        'eye-dropper' => 'pipette',
         'eye-slash' => 'eye-off',
         'finger-print' => 'fingerprint-pattern',
         'home' => 'house',
@@ -153,35 +160,6 @@ final class IconMap
         'chevrons-up-down' => 'chevron-up-down',
         'folder-git-2' => 'folder',
         'layout-grid' => 'squares-2x2',
-    ];
-
-    /**
-     * Icons Flux renders from inside its own components.
-     *
-     * Refit cannot rewrite Flux's vendor code, so going all-Lucide means writing
-     * an override at the name Flux asks for — the *Heroicons* one for all but
-     * `loading`, which is {@see FLUX_OWNED}. That is the only way a `flux:select`
-     * chevron, a `viewable` input's eye, or a button's spinner follows the switch.
-     *
-     * Used as a fallback when the installed Flux package cannot be scanned.
-     *
-     * @var list<string>
-     */
-    public const array FLUX_INTERNAL_FALLBACK = [
-        'check',
-        'chevron-down',
-        'chevron-left',
-        'chevron-up-down',
-        'clipboard-document',
-        'clipboard-document-check',
-        'exclamation-triangle',
-        'eye',
-        'eye-slash',
-        'loading',
-        'magnifying-glass',
-        'minus',
-        'slash',
-        'x-mark',
     ];
 
     public static function toLucide(string $heroicon): ?string

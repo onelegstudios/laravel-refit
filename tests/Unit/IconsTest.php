@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Onelegstudios\Refit\Icons\FluxInternals;
 use Onelegstudios\Refit\Icons\IconMap;
 use Onelegstudios\Refit\Icons\IconScanner;
 use Onelegstudios\Refit\Icons\OverrideGenerator;
@@ -28,10 +29,28 @@ it('bundles artwork for the Lucide icons the kit vendors in', function (): void 
     expect($missing)->toBe([]);
 });
 
-it('can translate every icon Flux is assumed to render internally', function (): void {
-    foreach (IconMap::FLUX_INTERNAL_FALLBACK as $name) {
+it('can translate every icon Flux is recorded as rendering internally', function (): void {
+    foreach (FluxInternals::names() as $name) {
         expect(IconMap::toLucide($name))->not->toBeNull("no Lucide name for [{$name}]");
     }
+});
+
+it('bundles artwork for every recorded Flux internal', function (): void {
+    $generator = new OverrideGenerator;
+
+    $missing = array_values(array_filter(
+        FluxInternals::names(),
+        fn (string $name): bool => ! $generator->has((string) IconMap::toLucide($name)),
+    ));
+
+    expect($missing)->toBe([]);
+});
+
+it('records the Pro names contributors cannot scan for themselves', function (): void {
+    // flux-pro is licensed, so most checkouts have nothing to scan. The manifest
+    // is the only place those names exist here — an empty block means a run of
+    // bin/scan-flux-internals.php dropped them.
+    expect(FluxInternals::namesFor('livewire/flux-pro'))->not->toBe([]);
 });
 
 it('treats name as an icon only on the generic icon tag', function (): void {
@@ -68,6 +87,17 @@ it('finds all three forms an icon name is written in', function (): void {
     sort($names);
 
     expect($names)->toBe(['key', 'plus', 'users']);
+});
+
+it('ignores an icon name a component interpolates at render time', function (): void {
+    // Flux Pro passes its own prop through unbound, which the bound-value check
+    // never sees: `{{ $icon }}` is not a name refit can translate.
+    $names = (new IconScanner)->scanSource(
+        '<flux:icon name="{{ $icon }}" variant="{{ $iconVariant }}" />'
+        .'<flux:button icon="{!! $raw !!}" /><flux:icon.check />',
+    );
+
+    expect($names)->toBe(['check']);
 });
 
 it('finds an icon a component only names as a prop default', function (): void {

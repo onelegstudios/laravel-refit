@@ -26,6 +26,8 @@ It is one-time scaffolding: it rewrites files in place, the changes are one-way 
 - Workbench server: `composer serve`
 - Starter kit fixtures: `composer fixtures` (downloads every `laravel new` Livewire variation to `tests/fixtures/starter-kits`, gitignored)
 - Lucide artwork: `composer icons` (refreshes the committed `resources/icons/lucide` bundle from the latest Lucide release); `composer icons:check` reports drift without writing
+- Flux internals: `composer flux:internals` re-records `resources/flux/internal-icons.json` from the `.flux-pro` sidecar (`composer install --working-dir=.flux-pro`, needs a Flux Pro licence); `composer flux:internals:check` reports drift without writing. Both take `-- --project=path` to read another project. Editions that are not installed keep their recorded names, so an unlicensed run never drops the Pro ones.
+- Never name `composer.fluxui.dev` in the root `composer.json` — not as a `require`, not even as a bare `repositories` entry. Composer loads every composer-type repository's `packages.json` before resolving, so an unauthenticated 401 there fails the entire install and contributors lose Pest and PHPStan too. That is why the licensed install lives in the separate, committed `.flux-pro/composer.json`, which the root install never reads.
 - Refresh everything: `composer refresh` (runs `icons` then `fixtures`; note it can leave a diff in `resources/icons/lucide` to review and commit)
 
 ## Local Skills

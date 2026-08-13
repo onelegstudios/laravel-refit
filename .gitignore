@@ -1,5 +1,14 @@
 /vendor
 /build
+# The sidecar's manifest is committed; what it installs is not. Nothing under
+# .flux-pro is ever read by the root `composer install`, so a checkout without a
+# Flux Pro licence is unaffected. Its composer.lock is covered by the pattern
+# further down.
+/.flux-pro/vendor
+# A Flux Pro licence key is a credential. Composer writes it to auth.json next
+# to the manifest it is authenticating for, so this must never be committable —
+# at the root or in the sidecar.
+auth.json
 /tests/fixtures/starter-kits
 /.phpunit.cache
 /.phpunit.result.cache
