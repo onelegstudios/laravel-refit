@@ -9,6 +9,7 @@ use Onelegstudios\Refit\Plan\Report;
 use Onelegstudios\Refit\Project\Project;
 use Onelegstudios\Refit\Project\ProjectDetector;
 use Onelegstudios\Refit\Refit;
+use Onelegstudios\Refit\Tasks\KeepOneAppLayout;
 use Onelegstudios\Refit\Tasks\KeepOneAuthLayout;
 use Onelegstudios\Refit\Tasks\MoveToastsToTop;
 use Onelegstudios\Refit\Tasks\NamespaceComponents;
@@ -43,6 +44,7 @@ it('registers the configured tasks', function (): void {
             'namespace-components',
             'toasts-at-top',
             'single-auth-layout',
+            'single-app-layout',
             'remove-flux-pro-source',
         ]);
 });
@@ -144,6 +146,40 @@ it('keeps only the auth layout the application renders', function (): void {
     expect($project->exists('resources/views/layouts/auth/simple.blade.php'))->toBeTrue()
         ->and($project->exists('resources/views/layouts/auth/card.blade.php'))->toBeFalse()
         ->and($project->exists('resources/views/layouts/auth/split.blade.php'))->toBeFalse();
+});
+
+it('keeps only the app layout the application renders', function (string $kit): void {
+    [$project] = runTask(new KeepOneAppLayout, $kit);
+
+    expect($project->exists('resources/views/layouts/app/sidebar.blade.php'))->toBeTrue()
+        ->and($project->exists('resources/views/layouts/app/header.blade.php'))->toBeFalse();
+})->with(starterKits());
+
+it('follows the delegating layout to the other shell', function (): void {
+    $root = copyFixture('livewire');
+    $delegate = 'resources/views/layouts/app.blade.php';
+
+    file_put_contents($root.'/'.$delegate, str_replace(
+        'app.sidebar',
+        'app.header',
+        (string) file_get_contents($root.'/'.$delegate),
+    ));
+
+    $project = (new ProjectDetector)->detect($root);
+    $plan = new Plan;
+    $report = new Report;
+
+    (new KeepOneAppLayout)->contribute($plan, $project, $report);
+    (new Applier)->apply($plan, $project, $report);
+
+    expect($project->exists('resources/views/layouts/app/header.blade.php'))->toBeTrue()
+        ->and($project->exists('resources/views/layouts/app/sidebar.blade.php'))->toBeFalse();
+});
+
+it('has nothing to delete once one layout is left', function (): void {
+    [$project] = runTask(new KeepOneAppLayout, 'livewire');
+
+    expect((new KeepOneAppLayout)->appliesTo($project))->toBeFalse();
 });
 
 it('positions every toast group at the top', function (string $kit): void {

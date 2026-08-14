@@ -16,6 +16,7 @@ something that would do nothing.
 | Structure | Group components into folders | `namespace-components` |
 | Structure | Show toasts at the top of the screen | `toasts-at-top` |
 | Cleanup | Delete the unused auth layouts | `single-auth-layout` |
+| Cleanup | Delete the unused app layouts | `single-app-layout` |
 | Cleanup | Remove the Flux Pro `@source` line from `app.css` | `remove-flux-pro-source` |
 
 The keys are what [`--answers`](/docs/using-refit/guide/the-refit-command#running-without-prompts)
@@ -109,6 +110,21 @@ weight from the first commit onwards.
 
 Which one survives is read out of the delegating layout rather than asked, so the
 job cannot pick a different answer than your application already has.
+
+## Delete the unused app layouts
+
+The same shape one level up. The kit ships two application shells — sidebar and
+header — and `layouts/app.blade.php` renders exactly one:
+
+```blade
+<x-layouts::app.sidebar :title="$title ?? null">
+```
+
+The other is a whole navigation chrome nothing renders: its own brand mark,
+navigation and user menu, quietly drifting out of step with the shell you do use
+every time you touch one of them. Swap the delegating layout over to
+`<x-layouts::app.header>` before running the job and refit follows you — it keeps
+whichever shell that file names.
 
 ## Remove the Flux Pro @source line from app.css
 
