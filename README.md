@@ -12,7 +12,7 @@
 
 Re-tailor a freshly installed Laravel Livewire starter kit around your own
 conventions. One interactive command picks an icon set and a list of structural
-jobs, shows you exactly what it intends to change, and applies it.
+tasks, shows you exactly what it intends to change, and applies it.
 
 Refit is one-time scaffolding. It rewrites files in place, the changes are
 one-way, and it offers to remove itself when it is done.
@@ -40,8 +40,8 @@ It asks two questions:
 - **Icons.** A fresh kit speaks Heroicons *and* Lucide at once. Refit takes you
   to one or the other, including the icons Flux renders from inside its own
   components.
-- **Jobs.** Partials become components, loose components get sorted into folders,
-  the layouts nothing renders go. Only jobs that fit the kit it detected are
+- **Tasks.** Partials become components, loose components get sorted into folders,
+  the layouts nothing renders go. Only tasks that fit the kit it detected are
   offered.
 
 Anything it cannot do — an icon with no translation, an `@include` that passes
@@ -57,9 +57,9 @@ Full documentation lives in [`docs/`](docs), and is served by
 - [Getting started](docs/getting-started.md)
 - [The refit command](docs/using-refit/guide/the-refit-command.md) — stages, options, and the checks that stop a run
 - [Icons](docs/using-refit/guide/icons.md)
-- [Jobs](docs/using-refit/guide/jobs.md)
+- [Tasks](docs/using-refit/guide/tasks.md)
 - [Configuration](docs/using-refit/reference/configuration.md)
-- [Writing your own job](docs/using-refit/guide/custom-jobs.md)
+- [Writing your own task](docs/using-refit/guide/custom-tasks.md)
 - [Supported starter kits](docs/using-refit/reference/starter-kits.md)
 - [Troubleshooting](docs/using-refit/reference/troubleshooting.md)
 

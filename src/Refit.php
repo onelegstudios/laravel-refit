@@ -11,7 +11,7 @@ use Onelegstudios\Refit\Tasks\TaskGroup;
 /**
  * The task registry.
  *
- * Packages register their own jobs from a service provider:
+ * Packages register their own tasks from a service provider:
  *
  *     Refit::task(new MyCustomTask);
  */

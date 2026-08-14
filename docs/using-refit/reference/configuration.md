@@ -1,13 +1,13 @@
 ---
 title: Configuration
-description: Publishing config/refit.php, choosing which jobs are offered, and where notes are written.
+description: Publishing config/refit.php, choosing which tasks are offered, and where notes are written.
 order: 1
 ---
 
 # Configuration
 
 Refit works with no configuration at all. Publish the file when you want to
-change which jobs are offered, or how one of them behaves:
+change which tasks are offered, or how one of them behaves:
 
 ```bash
 php artisan vendor:publish --tag="refit-config"
@@ -38,7 +38,7 @@ return [
 
 ### `tasks`
 
-The optional jobs `php artisan refit` offers once the icon set is chosen. Each is
+The optional tasks `php artisan refit` offers once the icon set is chosen. Each is
 resolved from the container, so a task may type-hint its own dependencies.
 
 Only tasks whose `appliesTo()` returns true for the detected starter kit are
@@ -54,10 +54,10 @@ screen only.
 The file is written only when there is a warning to record, so a clean run leaves
 no notes behind. See [Troubleshooting](/docs/using-refit/reference/troubleshooting).
 
-## Registering jobs from a service provider
+## Registering tasks from a service provider
 
 Config is not the only way in. The `Refit` facade is a registry you can add to
-from any service provider, which is how a package ships a job of its own:
+from any service provider, which is how a package ships a task of its own:
 
 ```php
 use Onelegstudios\Refit\Facades\Refit;
@@ -69,7 +69,7 @@ public function boot(): void
 ```
 
 `Refit::task()` is variadic and returns the registry, so several can go in at
-once. Registering an *instance* is also how you reconfigure a shipped job —
+once. Registering an *instance* is also how you reconfigure a shipped task —
 `NamespaceComponents` takes a component map and a fallback folder:
 
 ```php
@@ -85,7 +85,7 @@ Refit::task(new NamespaceComponents(
 ```
 
 > [!TIP]
-> When you reconfigure a job this way, drop its class from the `tasks` array
+> When you reconfigure a task this way, drop its class from the `tasks` array
 > first. Otherwise both copies are registered and both appear in the list.
 
 ## Removing refit

@@ -1,16 +1,16 @@
 ---
-title: Jobs
-description: The structural and cleanup jobs refit offers once the icon set is chosen.
+title: Tasks
+description: The structural and cleanup tasks refit offers once the icon set is chosen.
 order: 3
 ---
 
-# Jobs
+# Tasks
 
-After the icon question you pick from a list of structural jobs. Only jobs that
+After the icon question you pick from a list of structural tasks. Only tasks that
 fit the kit refit detected are offered, so you are never asked to choose
 something that would do nothing.
 
-| Group | Job | Key |
+| Group | Task | Key |
 |---|---|---|
 | Structure | Use components instead of partials | `partials-to-components` |
 | Structure | Group components into folders | `namespace-components` |
@@ -43,7 +43,7 @@ unplanned is still sitting in it, which is reported and left alone.
 
 Sorts the kit's loose anonymous components by what they are for, and drops the
 prefix once the folder carries it — `<x-app-logo />` becomes `<x-brand.logo />`.
-With both structure jobs picked, the kit comes out like this:
+With both structure tasks picked, the kit comes out like this:
 
 ```
 resources/views/components/
@@ -77,7 +77,7 @@ Only top-level files move. Anything already in a subfolder is namespaced, and
 Livewire's own `x-layouts::` and `x-pages::` views are a different mechanism
 entirely.
 
-To lay the tree out your own way, register the job with your own map from a
+To lay the tree out your own way, register the task with your own map from a
 service provider:
 
 ```php
@@ -109,7 +109,7 @@ The kit ships three auth layouts — card, simple and split — and
 weight from the first commit onwards.
 
 Which one survives is read out of the delegating layout rather than asked, so the
-job cannot pick a different answer than your application already has.
+task cannot pick a different answer than your application already has.
 
 ## Delete the unused app layouts
 
@@ -123,7 +123,7 @@ header — and `layouts/app.blade.php` renders exactly one:
 The other is a whole navigation chrome nothing renders: its own brand mark,
 navigation and user menu, quietly drifting out of step with the shell you do use
 every time you touch one of them. Swap the delegating layout over to
-`<x-layouts::app.header>` before running the job and refit follows you — it keeps
+`<x-layouts::app.header>` before running the task and refit follows you — it keeps
 whichever shell that file names.
 
 ## Remove the Flux Pro @source line from app.css
@@ -134,12 +134,12 @@ Every variant ships this on line 6 of `resources/css/app.css`:
 @source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';
 ```
 
-It points at a directory that only exists with a Flux Pro licence. The job is
+It points at a directory that only exists with a Flux Pro licence. The task is
 offered only when Flux Pro is absent, so buying a licence later is never quietly
 broken.
 
-## Adding jobs of your own
+## Adding tasks of your own
 
-The list is not fixed — a job is a class implementing a small interface, and
+The list is not fixed — a task is a class implementing a small interface, and
 refit handles the ordering, the preview and the apply. See
-[Writing your own job](/docs/using-refit/guide/custom-jobs).
+[Writing your own task](/docs/using-refit/guide/custom-tasks).

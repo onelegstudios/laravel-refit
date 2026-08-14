@@ -34,7 +34,7 @@ signal is a file that either survived `install:features` or did not:
 | Flux Pro | `livewire/flux-pro` in `composer.json` or `composer.lock` |
 
 What it found is printed as the summary line at the top of the run, and it
-decides which jobs you are offered.
+decides which tasks you are offered.
 
 ## Preflight
 
@@ -67,9 +67,9 @@ Two questions, in order:
 
 1. **Icons.** Keep the mix, go all-Heroicons, or go all-Lucide. See
    [Icons](/docs/using-refit/guide/icons).
-2. **Jobs.** A multiselect of the structural and cleanup jobs that fit the
-   detected kit. Only applicable jobs are listed, so you are never asked to pick
-   something that would do nothing. See [Jobs](/docs/using-refit/guide/jobs).
+2. **Tasks.** A multiselect of the structural and cleanup tasks that fit the
+   detected kit. Only applicable tasks are listed, so you are never asked to pick
+   something that would do nothing. See [Tasks](/docs/using-refit/guide/tasks).
 
 ## Plan
 
@@ -84,7 +84,7 @@ Your answers become a list of actions, sorted into stages that run in order:
 | `Format` | Formatting and asset builds |
 | `Finish` | Anything that must happen after the project is otherwise final |
 
-The stages are what keep two jobs from tripping over one another: files stop
+The stages are what keep two tasks from tripping over one another: files stop
 moving before the reconcile pass rewrites the references to them. When the plan
 is not empty, refit appends `./vendor/bin/pint --dirty` to the `Format` stage so
 the files it touched come out formatted.
@@ -117,7 +117,7 @@ php artisan refit --answers='{"icons":"lucide","tasks":["partials-to-components"
 | Key | Value |
 |---|---|
 | `icons` | `keep`, `heroicons` or `lucide`. Anything unrecognised falls back to `keep` |
-| `tasks` | A list of task keys. Unknown keys are ignored — see [Jobs](/docs/using-refit/guide/jobs) for the list |
+| `tasks` | A list of task keys. Unknown keys are ignored — see [Tasks](/docs/using-refit/guide/tasks) for the list |
 
 With `--answers` there is no confirmation step (passing answers *is* the
 confirmation) and no offer to remove refit at the end. Combine it with

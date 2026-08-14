@@ -72,11 +72,11 @@ tree and adapts:
 - **Features** — teams, WorkOS, passkeys, two-factor, registration — are whatever
   survived `install:features`, and each is detected from a file that either
   exists or does not.
-- **Flux edition** decides whether the `@source` cleanup job is offered at all,
+- **Flux edition** decides whether the `@source` cleanup task is offered at all,
   and which stubs are scanned for the icons Flux renders internally.
 
 The upshot is that a variation not on this list still gets a sensible run, as
-long as it is recognisably the Livewire kit: jobs that do not fit are not
+long as it is recognisably the Livewire kit: tasks that do not fit are not
 offered, and nothing is assumed that disk did not answer.
 
 ## Fixtures

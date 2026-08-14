@@ -8,7 +8,7 @@ order: 3
 
 Refit follows [SemVer](https://semver.org). It has not reached v0.1.0 yet, so
 changes to the core logic are still fair game — but the shipped `Task` and
-`Action` contracts are what third-party jobs are written against, so treat them
+`Action` contracts are what third-party tasks are written against, so treat them
 as the public surface once tagged.
 
 ## Before tagging
