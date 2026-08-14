@@ -15,7 +15,7 @@ return [
     | Tasks
     |--------------------------------------------------------------------------
     |
-    | The optional jobs `php artisan refit` offers once the icon set is chosen.
+    | The optional tasks `php artisan refit` offers once the icon set is chosen.
     | Each is resolved from the container, so a task may type-hint its own
     | dependencies. Add your own here, or register them from a service provider
     | with `Refit::task(new YourTask)`.
