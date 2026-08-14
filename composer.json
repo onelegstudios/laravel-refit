@@ -1,7 +1,7 @@
 {
   "$schema": "https://getcomposer.org/schema.json",
   "name": "onelegstudios/laravel-refit",
-  "description": "Refit the starter - Customize Laravel’s Livewire starter kit around your workflow.",
+  "description": "Refit the starter - One-time scaffolding for Laravel's Livewire starter kit.",
   "keywords": [
     "laravel",
     "onelegstudios",

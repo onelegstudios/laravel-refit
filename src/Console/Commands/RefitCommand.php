@@ -43,7 +43,7 @@ class RefitCommand extends Command
     /**
      * The command description.
      */
-    protected $description = 'Re-tailor the Livewire starter kit around your workflow.';
+    protected $description = 'Customise the Livewire starter kit around your own conventions.';
 
     public function handle(Refit $refit, ProjectDetector $detector, Applier $applier): int
     {
