@@ -111,6 +111,6 @@ however your project normally does.
 Don't. Refit is one-time scaffolding: the changes are one-way and not idempotent,
 which is exactly why the command offers to remove itself when it finishes. A
 second run against an already-refitted project will find a different tree than
-the one its jobs were written for.
+the one its tasks were written for.
 
 If a run went wrong, `git checkout .` and start again from a clean tree.

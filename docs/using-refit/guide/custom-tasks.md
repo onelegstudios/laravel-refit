@@ -1,12 +1,12 @@
 ---
-title: Writing your own job
+title: Writing your own task
 description: The Task interface, the plan API, and the actions refit ships.
 order: 4
 ---
 
-# Writing your own job
+# Writing your own task
 
-A job is a class implementing `Onelegstudios\Refit\Contracts\Task`. It says when
+A task is a class implementing `Onelegstudios\Refit\Contracts\Task`. It says when
 it applies and contributes actions to the plan; refit handles the ordering, the
 preview, and the apply.
 
@@ -52,10 +52,10 @@ Refit::task(new DropTheWelcomePage);
 | `group()` | `TaskGroup::Structure`, `Naming` or `Cleanup` — sorts the list and prefixes the label |
 | `label()` | The line shown in the multiselect |
 | `hint()` | The dimmer line under it |
-| `appliesTo()` | Whether this job makes sense for the detected project |
+| `appliesTo()` | Whether this task makes sense for the detected project |
 | `contribute()` | Add actions to the plan |
 
-`appliesTo()` is the important one. A job that cannot apply is never offered, so
+`appliesTo()` is the important one. A task that cannot apply is never offered, so
 the user is not asked to choose between things that would silently do nothing.
 Answer it from the project rather than from configuration:
 
@@ -98,7 +98,7 @@ Actions land in stages so that contributors never have to know about each other.
 | `Finish` | Anything that must happen after the project is otherwise final |
 
 Files stop moving before the reconcile pass rewrites references, which is what
-keeps two jobs from tripping over one another. Put anything that reads the file
+keeps two tasks from tripping over one another. Put anything that reads the file
 tree as a whole in `Reconcile` or later.
 
 ## The actions refit ships
@@ -151,9 +151,9 @@ Warnings are printed at the end of the run and written to
 [`REFIT-NOTES.md`](/docs/using-refit/reference/troubleshooting). Notes are recorded in the same
 file when there is at least one warning to write it for.
 
-## Testing a job
+## Testing a task
 
-Plans are a pure function of the detected project plus the answers, so a job can
+Plans are a pure function of the detected project plus the answers, so a task can
 be asserted against a real starter kit without touching a filesystem:
 
 ```php

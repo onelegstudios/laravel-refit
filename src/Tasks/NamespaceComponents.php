@@ -27,7 +27,7 @@ use Onelegstudios\Refit\Project\Project;
  *
  * The directory is read while the plan runs, not while it is built, so a partial
  * promoted into `components/` by another task in the same run is grouped too.
- * Without that, picking both structure jobs left a components directory half
+ * Without that, picking both structure tasks left a components directory half
  * namespaced.
  */
 final class NamespaceComponents implements Task

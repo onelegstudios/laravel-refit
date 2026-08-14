@@ -81,7 +81,7 @@ src/
 ├── Plan/         Plan, stages, actions, applier, report, guard
 ├── Project/      Detection, features, component grouping
 ├── Support/      Git
-├── Tasks/        The shipped jobs
+├── Tasks/        The tasks refit ships
 ├── Facades/      The Refit facade
 └── Refit.php     The task registry
 bin/              Maintenance scripts (fixtures, icons, Flux internals)

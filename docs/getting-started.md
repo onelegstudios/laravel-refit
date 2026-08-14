@@ -97,6 +97,6 @@ php artisan refit --dry-run
 ## Next steps
 
 - [Icons](/docs/using-refit/guide/icons) — what each of the three answers does.
-- [Jobs](/docs/using-refit/guide/jobs) — the structural changes on offer.
+- [Tasks](/docs/using-refit/guide/tasks) — the structural changes on offer.
 - [Configuration](/docs/using-refit/reference/configuration) — change the component map, the
-  notes file, or the list of jobs.
+  notes file, or the list of tasks.

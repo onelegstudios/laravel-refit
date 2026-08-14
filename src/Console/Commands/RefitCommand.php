@@ -196,9 +196,9 @@ class RefitCommand extends Command
         }
 
         $chosen = multiselect(
-            label: 'Which jobs would you like to run?',
+            label: 'Which tasks would you like to run?',
             options: $options,
-            hint: 'Space to select, enter to confirm. Only jobs that fit this kit are listed.',
+            hint: 'Space to select, enter to confirm. Only tasks that fit this kit are listed.',
         );
 
         return $refit->resolve(array_values(array_filter($chosen, 'is_string')));

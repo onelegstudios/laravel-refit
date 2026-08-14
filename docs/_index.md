@@ -8,7 +8,7 @@ order: 1
 
 Refit is a dev-only Laravel package that customises a freshly installed Livewire
 starter kit. One interactive command — `php artisan refit` — picks an icon
-set and a list of structural jobs, shows you exactly what it intends to change,
+set and a list of structural tasks, shows you exactly what it intends to change,
 and applies it.
 
 ```bash
@@ -25,9 +25,9 @@ php artisan refit
 - **Settles the icon question.** A fresh kit speaks Heroicons _and_ Lucide at
   once. Refit takes you to one or the other — including the icons Flux renders
   from inside its own components. See [Icons](/docs/using-refit/guide/icons).
-- **Runs structural jobs.** Partials become components, loose components get
-  sorted into folders, the layouts nothing renders go. Only jobs that fit the
-  kit it detected are offered. See [Jobs](/docs/using-refit/guide/jobs).
+- **Runs structural tasks.** Partials become components, loose components get
+  sorted into folders, the layouts nothing renders go. Only tasks that fit the
+  kit it detected are offered. See [Tasks](/docs/using-refit/guide/tasks).
 - **Shows you the plan first.** Nothing touches disk until you have read the
   list of changes and agreed to it. See
   [The refit command](/docs/using-refit/guide/the-refit-command).
@@ -38,9 +38,9 @@ php artisan refit
 ## Where to go next
 
 - New here? Start with [Getting started](/docs/getting-started).
-- Want to change what the jobs do, or add your own?
+- Want to change what the tasks do, or add your own?
   [Configuration](/docs/using-refit/reference/configuration) and
-  [Writing your own job](/docs/using-refit/guide/custom-jobs).
+  [Writing your own task](/docs/using-refit/guide/custom-tasks).
 - Working _on_ refit rather than with it? The
   [Development](/docs/development) section covers the architecture, the icon
   pipeline, and the test suite.

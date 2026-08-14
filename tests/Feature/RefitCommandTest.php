@@ -94,7 +94,7 @@ it('deletes the published config when it is asked to remove itself', function ()
 
     $this->artisan('refit', ['--force' => true])
         ->expectsQuestion('The kit ships Heroicons with a few Lucide icons vendored in. What would you like?', 'keep')
-        ->expectsQuestion('Which jobs would you like to run?', ['remove-flux-pro-source'])
+        ->expectsQuestion('Which tasks would you like to run?', ['remove-flux-pro-source'])
         ->expectsQuestion('Apply these changes?', true)
         ->expectsQuestion('Remove refit from this project now?', true)
         ->expectsOutputToContain('Deleted config/refit.php.')
@@ -110,7 +110,7 @@ it('leaves the published config alone when refit is staying', function (): void 
 
     $this->artisan('refit', ['--force' => true])
         ->expectsQuestion('The kit ships Heroicons with a few Lucide icons vendored in. What would you like?', 'keep')
-        ->expectsQuestion('Which jobs would you like to run?', ['remove-flux-pro-source'])
+        ->expectsQuestion('Which tasks would you like to run?', ['remove-flux-pro-source'])
         ->expectsQuestion('Apply these changes?', true)
         ->expectsQuestion('Remove refit from this project now?', false)
         ->assertSuccessful();
@@ -148,7 +148,7 @@ it('leaves every view structurally intact after a full run', function (string $k
 })->with(starterKits());
 
 it('groups promoted partials along with everything else', function (): void {
-    // Both structure jobs at once used to leave components/ half namespaced,
+    // Both structure tasks at once used to leave components/ half namespaced,
     // because the folder was read while the plan was built rather than run.
     $root = useKit('livewire');
 

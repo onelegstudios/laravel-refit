@@ -46,7 +46,7 @@ and sorts them by group order then label; `options()` renders that as the prompt
 list; `resolve()` maps `--answers` keys back to instances.
 
 Tasks are an interface on day one because they are the open-ended half of the
-tool: a package can register a job refit knows nothing about.
+tool: a package can register a task refit knows nothing about.
 
 ## Plan, stages, actions
 
@@ -64,7 +64,7 @@ not have to know about each other:
 
 Tasks move and rename files freely in `Move`; the single reconciliation pass
 afterwards sees the settled tree and fixes every reference in one traversal. Two
-jobs that both reorganise views therefore never need to be aware of each other.
+tasks that both reorganise views therefore never need to be aware of each other.
 
 `Plan::describe()` renders the whole thing as lines — the same lines the
 confirmation preview prints and the plan tests assert against. Making the preview
@@ -76,7 +76,7 @@ agreeing to cannot slip past the tests.
 Some moves cannot be enumerated at planning time. `MoveComponentsIntoFolders`
 reads `resources/views/components` when it *runs*, because an earlier task in the
 same run may have promoted a partial into it — without that, picking both
-structure jobs left a components directory half namespaced.
+structure tasks left a components directory half namespaced.
 
 Those actions record what they did in a `RenameLedger`, and
 `ApplyLedgerRenames` reads it during `Reconcile`. The ledger is the mechanism
