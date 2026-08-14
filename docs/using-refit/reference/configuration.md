@@ -26,8 +26,7 @@ return [
         PromotePartialsToComponents::class,
         NamespaceComponents::class,
         MoveToastsToTop::class,
-        KeepOneAuthLayout::class,
-        KeepOneAppLayout::class,
+        KeepOneLayout::class,
         RemoveFluxProSource::class,
     ],
 
