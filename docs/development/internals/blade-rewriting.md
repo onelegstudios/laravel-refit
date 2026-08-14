@@ -82,6 +82,16 @@ Skipping beats aborting. A half-applied run is harder to reason about than one
 bad file, and the clean-tree precondition means `git checkout .` is always
 available as the real undo.
 
+### The PHP half
+
+The Blade tree is not the only place a component is named. `Route::livewire()`
+and `Livewire::test()` name one as a string, so `RenameComponentStrings` is the
+counterpart sweep: it replaces whole quoted literals across the `.php` files in
+`app/`, `routes/` and `tests/`. Quoting is what makes it safe — a name that is
+the leading edge of a longer one cannot be half-rewritten, and prose that merely
+mentions a component is left alone. There is no balance to guard, so there is no
+guard.
+
 ## BladeGuard
 
 The balance check is **differential** — it compares before against after, not

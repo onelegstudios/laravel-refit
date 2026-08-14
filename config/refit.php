@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Onelegstudios\Refit\Tasks\KeepOneLayout;
 use Onelegstudios\Refit\Tasks\MoveAuthViewsOutOfPages;
+use Onelegstudios\Refit\Tasks\MoveComponentsOutOfPages;
 use Onelegstudios\Refit\Tasks\MoveToastsToTop;
 use Onelegstudios\Refit\Tasks\NamespaceComponents;
 use Onelegstudios\Refit\Tasks\PromotePartialsToComponents;
@@ -29,6 +30,7 @@ return [
     'tasks' => [
         PromotePartialsToComponents::class,
         MoveAuthViewsOutOfPages::class,
+        MoveComponentsOutOfPages::class,
         NamespaceComponents::class,
         MoveToastsToTop::class,
         KeepOneLayout::class,
