@@ -1,7 +1,9 @@
 laravel: '@testbench'
 
 providers:
-  # - Workbench\App\Providers\WorkbenchServiceProvider
+  # Points Laradocs at this repository's docs/ directory, so `composer serve`
+  # renders the package documentation at /docs.
+  - Workbench\App\Providers\WorkbenchServiceProvider
 
 migrations:
   - workbench/database/migrations

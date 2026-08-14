@@ -1,0 +1,141 @@
+name: Publish docs
+
+# Pushes docs/ into the documentation site's repository under a per-major
+# version directory, so the site never has to pull refit in to read them.
+#
+# Laradocs serves sibling sub-directories of its docs path as versions, so the
+# layout this writes to is what produces /open-source/refit/docs/v1/… on the
+# site:
+#
+#   docs-sources/refit/
+#   ├── v1/   ← overwritten by every v1.x release
+#   └── v2/
+#
+# Configure the target with two repository settings. Both are optional: without
+# them the job skips rather than fails, so a fork never sees a red run.
+#
+#   vars.DOCS_SITE_REPO    owner/repo of the site (e.g. onelegstudios/website)
+#   vars.DOCS_SITE_PATH    docs root in that repo (default docs-sources/refit)
+#   secrets.DOCS_SITE_TOKEN  a token with contents:write on the site repository
+
+on:
+  release:
+    types: [released]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to publish (defaults to the latest release)"
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-docs
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish to the docs site
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      # Secrets cannot be read in a job-level `if`, so the skip is a step
+      # output — the same shape the Flux Pro job in tests.yml uses.
+      - name: Check for a site target
+        id: target
+        env:
+          SITE_REPO: ${{ vars.DOCS_SITE_REPO }}
+          SITE_TOKEN: ${{ secrets.DOCS_SITE_TOKEN }}
+        run: |
+          if [ -n "$SITE_REPO" ] && [ -n "$SITE_TOKEN" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "No docs site configured — set vars.DOCS_SITE_REPO and secrets.DOCS_SITE_TOKEN to enable." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      # A release event carries its own tag; a manual run takes one, or falls
+      # back to the latest release so a re-publish needs no arguments.
+      - name: Resolve the release tag
+        id: release
+        if: steps.target.outputs.present == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: |
+          set -euo pipefail
+
+          tag="$TAG"
+
+          if [ -z "$tag" ]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+
+          # Anchored, so a pre-release tag is refused rather than mapped onto
+          # the stable line it shares a major with — publishing v2.0.0-beta.1
+          # would otherwise overwrite the v2 docs every visitor is reading.
+          if ! printf '%s' "$tag" | grep -Eq '^v?[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::[$tag] is not a stable version tag, so it maps to no docs version."
+            exit 1
+          fi
+
+          # One directory per major, so every release in a line overwrites it
+          # rather than adding an entry to the version selector. 0.x is one
+          # line: there is nothing published to keep compatible with yet.
+          version="${tag#v}"
+          directory="v${version%%.*}"
+
+          {
+            echo "tag=$tag"
+            echo "directory=$directory"
+          } >> "$GITHUB_OUTPUT"
+
+          echo "Publishing $tag to $directory." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Check out the release
+        if: steps.target.outputs.present == 'true'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ steps.release.outputs.tag }}
+          path: package
+
+      - name: Check out the docs site
+        if: steps.target.outputs.present == 'true'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ${{ vars.DOCS_SITE_REPO }}
+          token: ${{ secrets.DOCS_SITE_TOKEN }}
+          path: site
+
+      - name: Sync the docs
+        if: steps.target.outputs.present == 'true'
+        env:
+          SITE_PATH: ${{ vars.DOCS_SITE_PATH || 'docs-sources/refit' }}
+          DIRECTORY: ${{ steps.release.outputs.directory }}
+          TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+
+          target="site/$SITE_PATH/$DIRECTORY"
+
+          mkdir -p "$target"
+
+          # --delete so a page removed from this release stops being served,
+          # rather than lingering as an orphan the sidebar still links to.
+          rsync -a --delete package/docs/ "$target/"
+
+          # Laradocs reads _version.json for the label in its version selector.
+          # Writing the exact tag makes the selector say "v1.2.0" rather than
+          # the bare directory name, and it refreshes on every release.
+          printf '{\n    "label": "%s"\n}\n' "$TAG" > "$target/_version.json"
+
+      - name: Commit to the docs site
+        if: steps.target.outputs.present == 'true'
+        uses: stefanzweifel/git-auto-commit-action@4a55954c782fc1ea30b9056cd3e7a2b40ca8887d # v7
+        with:
+          repository: site
+          commit_message: "Publish refit ${{ steps.release.outputs.tag }} docs"
+          file_pattern: ${{ vars.DOCS_SITE_PATH || 'docs-sources/refit' }}
