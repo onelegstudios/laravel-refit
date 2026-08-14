@@ -27,6 +27,7 @@ return [
         NamespaceComponents::class,
         MoveToastsToTop::class,
         KeepOneAuthLayout::class,
+        KeepOneAppLayout::class,
         RemoveFluxProSource::class,
     ],
 

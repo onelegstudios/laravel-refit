@@ -41,7 +41,8 @@ It asks two questions:
   to one or the other, including the icons Flux renders from inside its own
   components.
 - **Jobs.** Partials become components, loose components get sorted into folders,
-  dead auth layouts go. Only jobs that fit the kit it detected are offered.
+  the layouts nothing renders go. Only jobs that fit the kit it detected are
+  offered.
 
 Anything it cannot do — an icon with no translation, an `@include` that passes
 data — is reported with the file it is in, never silently guessed at.

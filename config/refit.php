@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Onelegstudios\Refit\Tasks\KeepOneAppLayout;
 use Onelegstudios\Refit\Tasks\KeepOneAuthLayout;
 use Onelegstudios\Refit\Tasks\MoveToastsToTop;
 use Onelegstudios\Refit\Tasks\NamespaceComponents;
@@ -30,6 +31,7 @@ return [
         NamespaceComponents::class,
         MoveToastsToTop::class,
         KeepOneAuthLayout::class,
+        KeepOneAppLayout::class,
         RemoveFluxProSource::class,
     ],
 

@@ -26,8 +26,8 @@ php artisan refit
   once. Refit takes you to one or the other — including the icons Flux renders
   from inside its own components. See [Icons](/docs/using-refit/guide/icons).
 - **Runs structural jobs.** Partials become components, loose components get
-  sorted into folders, dead auth layouts go. Only jobs that fit the kit it
-  detected are offered. See [Jobs](/docs/using-refit/guide/jobs).
+  sorted into folders, the layouts nothing renders go. Only jobs that fit the
+  kit it detected are offered. See [Jobs](/docs/using-refit/guide/jobs).
 - **Shows you the plan first.** Nothing touches disk until you have read the
   list of changes and agreed to it. See
   [The refit command](/docs/using-refit/guide/the-refit-command).
