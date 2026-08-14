@@ -21,9 +21,14 @@ no runtime behaviour.
 
 Refit refuses to start unless two things are true:
 
-1. **`install:features` has already run.** While `chisel.php` is still in the
-   project root the file tree is not the one you are keeping, so refit would be
-   rewriting views you are about to delete.
+1. **`install:features` has already run.** The Livewire kit ships every
+   authentication feature and carves the unwanted ones away afterwards, using a
+   `chisel.php` in the project root that deletes itself once it has run.
+   `laravel new` does this for you before handing back the shell, so you have
+   probably never seen the file — but if it is still there the file tree is not
+   the one you are keeping, and refit would be rewriting views you are about to
+   delete. See
+   [`install:features` and `chisel.php`](/docs/using-refit/reference/starter-kits#installfeatures-and-chiselphp).
 2. **You are in a git repository with a clean working tree.** The changes are
    one-way, and a clean tree means `git checkout .` is the undo. That is why
    refit ships no backup or rollback of its own.

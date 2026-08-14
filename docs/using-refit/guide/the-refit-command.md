@@ -45,8 +45,13 @@ Two conditions stop a run before anything is asked.
 > This starter kit still has chisel.php — run `php artisan install:features`
 > first, so refit sees the file tree you are actually keeping.
 
-Not overridable, and deliberately so: refitting a tree that is about to be
-chiselled means rewriting views you are about to delete.
+The kit ships every authentication feature at once and `install:features` carves
+the unwanted ones away, deleting `chisel.php` when it is done. `laravel new` runs
+that step for you, so a normally created project never has the file — if refit
+finds one, the carving is still pending. Not overridable, and deliberately so:
+refitting a tree that is about to be chiselled means rewriting views you are
+about to delete. The longer version is in
+[Supported starter kits](/docs/using-refit/reference/starter-kits#installfeatures-and-chiselphp).
 
 **The working tree is not clean, or is not a repository at all.**
 

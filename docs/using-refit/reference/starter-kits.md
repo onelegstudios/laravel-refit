@@ -23,6 +23,42 @@ components.
 The **blank** Livewire kit is not supported: it ships without Flux and without
 auth, so there is nothing to refit.
 
+## `install:features` and `chisel.php`
+
+The kit does not download only the features you asked for. It ships **every**
+authentication feature at once, with the code for each one fenced off by section
+markers, and carves the unwanted ones away afterwards.
+
+`chisel.php` is the script that does the carving. It sits in the project root,
+asks a single question —
+
+> Which authentication features would you like to enable?
+> *Email verification, Registration, Two-factor authentication, Passkeys,
+> Password confirmation*
+
+— and for every feature you leave unticked it deletes that feature's files,
+strips its marked sections out of the files it shared with others, removes its
+imports and traits, and drops the npm packages it needed.
+`php artisan install:features` is the command that loads and runs it.
+
+You have almost certainly never run that command yourself, because `laravel new`
+runs it for you. The kit lists it under
+`extra.laravel.installer.post-create-project` in `composer.json`, so it fires
+while the installer is still working — between the questions you answered and
+the shell prompt coming back. Its last act is to delete itself: `chisel.php`,
+`chisel-paths.php`, `app/Console/Commands/InstallFeaturesCommand.php` and the
+`composer.json` lines that invoked it all go. By the time you `cd` into the new
+project there is nothing left to see, which is why the file is unfamiliar to
+most people who have used the kit for years.
+
+That disappearing act is exactly what makes it a useful signal. A `chisel.php`
+still sitting in the root means the carving has **not** happened yet — usually
+because the starter kit repository was cloned directly instead of created with
+`laravel new`, or because the installer's run was interrupted or failed partway
+through. Either way the tree still holds every feature, including the ones that
+are about to be deleted, so refit stops rather than spend a run rewriting views
+with no future. See [Preflight](/docs/using-refit/guide/the-refit-command#preflight).
+
 ## What varies between them
 
 Refit does not branch on the variation name — it never sees one. It reads the

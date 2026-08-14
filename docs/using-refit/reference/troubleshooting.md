@@ -49,6 +49,13 @@ Run `php artisan install:features` first. While `chisel.php` is present the file
 tree is not the one you are keeping, so refit would be rewriting views you are
 about to delete. This check cannot be forced.
 
+Seeing it at all is unusual: `laravel new` runs that step during creation and the
+script deletes itself afterwards, so the file survives mainly when the kit
+repository was cloned directly, or when the installer stopped partway. If you do
+not recognise the name, [`install:features` and
+`chisel.php`](/docs/using-refit/reference/starter-kits#installfeatures-and-chiselphp)
+explains what it is.
+
 **"Your git working tree has uncommitted changes"**
 
 Commit or stash first, so `git checkout .` can undo the run. `--force` skips the
