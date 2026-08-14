@@ -1,6 +1,6 @@
 ---
 title: Refit
-description: Re-tailor a freshly installed Laravel Livewire starter kit around your own conventions.
+description: One-time scaffolding for Laravel's Livewire starter kit.
 order: 1
 ---
 

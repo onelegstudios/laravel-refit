@@ -10,12 +10,13 @@
     <a href="https://packagist.org/packages/onelegstudios/laravel-refit"><img src="https://img.shields.io/packagist/dt/onelegstudios/laravel-refit.svg?style=flat-square" alt="Total Downloads"></a>
 </p>
 
-Re-tailor a freshly installed Laravel Livewire starter kit around your own
-conventions. One interactive command picks an icon set and a list of structural
-tasks, shows you exactly what it intends to change, and applies it.
+Refit the starter. One-time scaffolding for Laravel's Livewire starter kit.
 
-Refit is one-time scaffolding. It rewrites files in place, the changes are
-one-way, and it offers to remove itself when it is done.
+One interactive command picks an icon set and a list of structural tasks, shows
+you exactly what it intends to change, and applies it.
+
+It rewrites files in place, the changes are one-way, and it offers to remove
+itself when it is done.
 
 ## Installation
 
