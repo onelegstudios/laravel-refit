@@ -83,6 +83,11 @@ Those actions record what they did in a `RenameLedger`, and
 that keeps tasks order-independent while still allowing moves that are only known
 at apply time.
 
+A task that *can* enumerate its moves fills the same ledger while it builds the
+plan — `MoveComponentsOutOfPages` does, because a route file tells it everything
+up front. The ledger is read at `Reconcile` either way, so both kinds of rename
+travel through one traversal rather than growing a second sweep.
+
 ## Applier and Report
 
 `Applier` walks `Plan::actions()` in stage order and calls each one, invoking an

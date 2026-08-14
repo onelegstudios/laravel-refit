@@ -14,6 +14,7 @@ something that would do nothing.
 |---|---|---|
 | Structure | Use components instead of partials | `partials-to-components` |
 | Structure | Move the auth views out of pages | `auth-views-out-of-pages` |
+| Structure | Move the non-page components out of pages | `components-out-of-pages` |
 | Structure | Group components into folders | `namespace-components` |
 | Structure | Show toasts at the top of the screen | `toasts-at-top` |
 | Cleanup | Delete the layouts the kit does not render | `single-layout` |
@@ -90,6 +91,71 @@ use Onelegstudios\Refit\Tasks\MoveAuthViewsOutOfPages;
 
 Refit::task(new MoveAuthViewsOutOfPages('resources/views/livewire/auth', 'livewire.auth.'));
 ```
+
+## Move the non-page components out of pages
+
+The kit already draws this line — in one place. `components/⚡team-switcher.blade.php`
+is a single-file Livewire component sitting where components go, rendered as
+`<livewire:team-switcher />`. Its neighbours were left in `pages/`, where they are
+pages by folder and components by every other measure:
+
+```blade
+<livewire:pages::settings.delete-user-modal />
+```
+
+Nothing routes to that. It is a modal the profile page opens, wearing a namespace
+that says the opposite — and the cost is that `pages/` stops meaning anything, so
+the one question worth asking about a Livewire component, whether it is a screen
+or a piece of one, has to be answered by reading it.
+
+A route is the only thing that makes a Livewire component a page, so a route is
+what the task reads. Everything a route does *not* name moves to
+`resources/views/components` under the folder it already sits in:
+
+```
+resources/views/
+├── components/
+│   └── settings/
+│       ├── layout.blade.php
+│       ├── ⚡delete-user-form.blade.php
+│       ├── ⚡delete-user-modal.blade.php
+│       ├── ⚡two-factor-setup-modal.blade.php
+│       └── two-factor/
+│           └── ⚡recovery-codes.blade.php
+└── pages/
+    └── settings/
+        ├── ⚡appearance.blade.php
+        ├── ⚡profile.blade.php
+        └── ⚡security.blade.php
+```
+
+Keeping the folder is what makes the reconciliation a subtraction — every
+reference loses `pages::` and nothing else, landing on the name the
+class-component kit uses for the same component:
+
+```blade
+<livewire:settings.delete-user-modal />
+<x-settings.layout>
+```
+
+`settings/layout.blade.php` travels with them. It is an anonymous Blade component
+rather than a Livewire one, so it moves as `<x-settings.layout>` — the path the
+class-component kit ships it at, exactly. A folder that held nothing but
+components, like `settings/two-factor`, goes once it is empty.
+
+In the teams kits `pages/teams` gets the same reading: `⚡index` and `⚡edit` are
+routed and stay, the five modals beside them move.
+
+> [!NOTE]
+> A section no route points into is not a page directory in the first place, and
+> is left alone. `pages/auth` is that case, and
+> [Move the auth views out of pages](#move-the-auth-views-out-of-pages) is its
+> separate argument.
+
+Blade tags are not the only place a component is named. `Livewire::test()` names
+one as a string, and the kit's own test suite does it a few dozen times, so the
+task rewrites the quoted names in `app/`, `routes/` and `tests/` too — a moved
+component should not leave a green suite red.
 
 ## Group components into folders
 

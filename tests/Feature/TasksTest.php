@@ -11,6 +11,7 @@ use Onelegstudios\Refit\Project\ProjectDetector;
 use Onelegstudios\Refit\Refit;
 use Onelegstudios\Refit\Tasks\KeepOneLayout;
 use Onelegstudios\Refit\Tasks\MoveAuthViewsOutOfPages;
+use Onelegstudios\Refit\Tasks\MoveComponentsOutOfPages;
 use Onelegstudios\Refit\Tasks\MoveToastsToTop;
 use Onelegstudios\Refit\Tasks\NamespaceComponents;
 use Onelegstudios\Refit\Tasks\PromotePartialsToComponents;
@@ -42,6 +43,7 @@ it('registers the configured tasks', function (): void {
         ->toBe([
             'partials-to-components',
             'auth-views-out-of-pages',
+            'components-out-of-pages',
             'namespace-components',
             'toasts-at-top',
             'single-layout',
@@ -144,6 +146,97 @@ it('has nothing left to move once the auth views have gone', function (): void {
     [$project] = runTask(new MoveAuthViewsOutOfPages, 'livewire');
 
     expect((new MoveAuthViewsOutOfPages)->appliesTo($project))->toBeFalse();
+});
+
+it('moves the components no route points at out of pages', function (): void {
+    [$project] = runTask(new MoveComponentsOutOfPages, 'livewire');
+
+    expect($project->exists('resources/views/components/settings/⚡delete-user-form.blade.php'))->toBeTrue()
+        ->and($project->exists('resources/views/components/settings/⚡delete-user-modal.blade.php'))->toBeTrue()
+        ->and($project->exists('resources/views/components/settings/⚡two-factor-setup-modal.blade.php'))->toBeTrue()
+        ->and($project->exists('resources/views/components/settings/two-factor/⚡recovery-codes.blade.php'))->toBeTrue()
+        ->and($project->exists('resources/views/pages/settings/⚡delete-user-form.blade.php'))->toBeFalse();
+});
+
+it('leaves the pages a route does point at where they are', function (): void {
+    [$project] = runTask(new MoveComponentsOutOfPages, 'livewire');
+
+    expect($project->exists('resources/views/pages/settings/⚡profile.blade.php'))->toBeTrue()
+        ->and($project->exists('resources/views/pages/settings/⚡appearance.blade.php'))->toBeTrue()
+        ->and($project->exists('resources/views/pages/settings/⚡security.blade.php'))->toBeTrue()
+        ->and($project->get('routes/settings.php'))->toContain("'pages::settings.profile'");
+});
+
+it('drops the namespace from every reference to a moved component', function (): void {
+    [$project] = runTask(new MoveComponentsOutOfPages, 'livewire');
+
+    expect($project->get('resources/views/pages/settings/⚡profile.blade.php'))
+        ->toContain('<livewire:settings.delete-user-form />')
+        ->and($project->get('resources/views/pages/settings/⚡security.blade.php'))
+        ->toContain('<livewire:settings.two-factor.recovery-codes')
+        ->toContain('<livewire:settings.two-factor-setup-modal')
+        ->and($project->get('resources/views/components/settings/⚡delete-user-form.blade.php'))
+        ->toContain('<livewire:settings.delete-user-modal />');
+});
+
+it('moves the settings layout to where the class-component kit keeps it', function (): void {
+    [$project] = runTask(new MoveComponentsOutOfPages, 'livewire');
+
+    expect($project->exists('resources/views/components/settings/layout.blade.php'))->toBeTrue()
+        ->and($project->get('resources/views/pages/settings/⚡profile.blade.php'))
+        ->toContain('<x-settings.layout')
+        ->toContain('</x-settings.layout>')
+        ->not->toContain('x-pages::');
+});
+
+it('repoints the component names the kit names as strings', function (): void {
+    [$project] = runTask(new MoveComponentsOutOfPages, 'livewire');
+
+    expect($project->get('tests/Feature/Settings/ProfileUpdateTest.php'))
+        ->toContain("Livewire::test('settings.delete-user-modal')")
+        ->toContain("Livewire::test('pages::settings.profile')");
+});
+
+it('removes a folder that held nothing but components', function (): void {
+    [$project] = runTask(new MoveComponentsOutOfPages, 'livewire');
+
+    expect($project->exists('resources/views/pages/settings/two-factor'))->toBeFalse()
+        ->and($project->exists('resources/views/pages/settings'))->toBeTrue();
+});
+
+it('leaves a section no route points into alone', function (): void {
+    [$project, $report] = runTask(new MoveComponentsOutOfPages, 'livewire');
+
+    expect($project->exists('resources/views/pages/auth/login.blade.php'))->toBeTrue()
+        ->and($report->warnings())->toBe([]);
+});
+
+it('sorts the team modals out from the two routed team pages', function (): void {
+    [$project] = runTask(new MoveComponentsOutOfPages, 'livewire-teams');
+
+    expect($project->exists('resources/views/components/teams/⚡delete-team-modal.blade.php'))->toBeTrue()
+        ->and($project->exists('resources/views/pages/teams/⚡index.blade.php'))->toBeTrue()
+        ->and($project->exists('resources/views/pages/teams/⚡edit.blade.php'))->toBeTrue()
+        ->and($project->get('resources/views/dashboard.blade.php'))
+        ->toContain('<livewire:teams.pending-invitations-modal />');
+});
+
+it('leaves no namespaced reference behind in any single-file kit', function (string $kit): void {
+    [$project] = runTask(new MoveComponentsOutOfPages, $kit);
+
+    foreach ($project->blades() as $path) {
+        expect($project->get($path))->not->toContain('pages::');
+    }
+})->with(['livewire', 'livewire-teams', 'livewire-workos', 'livewire-workos-teams']);
+
+it('is not offered to the class-component kit', function (): void {
+    expect((new MoveComponentsOutOfPages)->appliesTo(detectFixture('livewire-class-components')))->toBeFalse();
+});
+
+it('has nothing left to move once the components have gone', function (): void {
+    [$project] = runTask(new MoveComponentsOutOfPages, 'livewire');
+
+    expect((new MoveComponentsOutOfPages)->appliesTo($project))->toBeFalse();
 });
 
 it('groups components by domain and repoints every reference', function (): void {
