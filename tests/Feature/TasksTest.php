@@ -9,8 +9,7 @@ use Onelegstudios\Refit\Plan\Report;
 use Onelegstudios\Refit\Project\Project;
 use Onelegstudios\Refit\Project\ProjectDetector;
 use Onelegstudios\Refit\Refit;
-use Onelegstudios\Refit\Tasks\KeepOneAppLayout;
-use Onelegstudios\Refit\Tasks\KeepOneAuthLayout;
+use Onelegstudios\Refit\Tasks\KeepOneLayout;
 use Onelegstudios\Refit\Tasks\MoveToastsToTop;
 use Onelegstudios\Refit\Tasks\NamespaceComponents;
 use Onelegstudios\Refit\Tasks\PromotePartialsToComponents;
@@ -43,8 +42,7 @@ it('registers the configured tasks', function (): void {
             'partials-to-components',
             'namespace-components',
             'toasts-at-top',
-            'single-auth-layout',
-            'single-app-layout',
+            'single-layout',
             'remove-flux-pro-source',
         ]);
 });
@@ -140,18 +138,13 @@ it('leaves no loose component behind in any kit', function (string $kit): void {
     expect($project->looseComponents())->toBe([]);
 })->with(starterKits());
 
-it('keeps only the auth layout the application renders', function (): void {
-    [$project] = runTask(new KeepOneAuthLayout, 'livewire');
+it('keeps only the layouts the application renders', function (string $kit): void {
+    [$project] = runTask(new KeepOneLayout, $kit);
 
     expect($project->exists('resources/views/layouts/auth/simple.blade.php'))->toBeTrue()
         ->and($project->exists('resources/views/layouts/auth/card.blade.php'))->toBeFalse()
-        ->and($project->exists('resources/views/layouts/auth/split.blade.php'))->toBeFalse();
-});
-
-it('keeps only the app layout the application renders', function (string $kit): void {
-    [$project] = runTask(new KeepOneAppLayout, $kit);
-
-    expect($project->exists('resources/views/layouts/app/sidebar.blade.php'))->toBeTrue()
+        ->and($project->exists('resources/views/layouts/auth/split.blade.php'))->toBeFalse()
+        ->and($project->exists('resources/views/layouts/app/sidebar.blade.php'))->toBeTrue()
         ->and($project->exists('resources/views/layouts/app/header.blade.php'))->toBeFalse();
 })->with(starterKits());
 
@@ -169,17 +162,24 @@ it('follows the delegating layout to the other shell', function (): void {
     $plan = new Plan;
     $report = new Report;
 
-    (new KeepOneAppLayout)->contribute($plan, $project, $report);
+    (new KeepOneLayout)->contribute($plan, $project, $report);
     (new Applier)->apply($plan, $project, $report);
 
     expect($project->exists('resources/views/layouts/app/header.blade.php'))->toBeTrue()
         ->and($project->exists('resources/views/layouts/app/sidebar.blade.php'))->toBeFalse();
 });
 
-it('has nothing to delete once one layout is left', function (): void {
-    [$project] = runTask(new KeepOneAppLayout, 'livewire');
+it('touches only the families it was given', function (): void {
+    [$project] = runTask(new KeepOneLayout(['auth']), 'livewire');
 
-    expect((new KeepOneAppLayout)->appliesTo($project))->toBeFalse();
+    expect($project->exists('resources/views/layouts/auth/card.blade.php'))->toBeFalse()
+        ->and($project->exists('resources/views/layouts/app/header.blade.php'))->toBeTrue();
+});
+
+it('has nothing to delete once one layout is left in each family', function (): void {
+    [$project] = runTask(new KeepOneLayout, 'livewire');
+
+    expect((new KeepOneLayout)->appliesTo($project))->toBeFalse();
 });
 
 it('positions every toast group at the top', function (string $kit): void {

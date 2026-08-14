@@ -15,8 +15,7 @@ something that would do nothing.
 | Structure | Use components instead of partials | `partials-to-components` |
 | Structure | Group components into folders | `namespace-components` |
 | Structure | Show toasts at the top of the screen | `toasts-at-top` |
-| Cleanup | Delete the unused auth layouts | `single-auth-layout` |
-| Cleanup | Delete the unused app layouts | `single-app-layout` |
+| Cleanup | Delete the layouts the kit does not render | `single-layout` |
 | Cleanup | Remove the Flux Pro `@source` line from `app.css` | `remove-flux-pro-source` |
 
 The keys are what [`--answers`](/docs/using-refit/guide/the-refit-command#running-without-prompts)
@@ -102,29 +101,37 @@ missing, and nothing else:
 
 A group that already carries a `position` is left as it is.
 
-## Delete the unused auth layouts
+## Delete the layouts the kit does not render
 
-The kit ships three auth layouts — card, simple and split — and
-`layouts/auth.blade.php` delegates to exactly one of them. The other two are dead
-weight from the first commit onwards.
-
-Which one survives is read out of the delegating layout rather than asked, so the
-task cannot pick a different answer than your application already has.
-
-## Delete the unused app layouts
-
-The same shape one level up. The kit ships two application shells — sidebar and
-header — and `layouts/app.blade.php` renders exactly one:
+Both layout families are built the same way: `layouts/auth.blade.php` and
+`layouts/app.blade.php` each render exactly one of the variants sitting in the
+folder beside them.
 
 ```blade
 <x-layouts::app.sidebar :title="$title ?? null">
 ```
 
-The other is a whole navigation chrome nothing renders: its own brand mark,
+That leaves three auth layouts where one is used — card, simple and split — and
+two application shells where one is used, sidebar and header. The unrendered app
+shell is the expensive one: a whole navigation chrome with its own brand mark,
 navigation and user menu, quietly drifting out of step with the shell you do use
-every time you touch one of them. Swap the delegating layout over to
-`<x-layouts::app.header>` before running the task and refit follows you — it keeps
-whichever shell that file names.
+every time you touch one of them.
+
+Which variant survives is read out of each delegating layout rather than asked, so
+the task cannot pick a different answer than your application already has. Swap
+`layouts/app.blade.php` over to `<x-layouts::app.header>` before running the task
+and refit follows you — it keeps whichever variant that file names.
+
+Both families are one task because they are one decision, and every kit ships
+both. The plan still lists each file it will delete, so a single answer hides
+nothing from the preview. To limit it to one family, register the task yourself:
+
+```php
+use Onelegstudios\Refit\Facades\Refit;
+use Onelegstudios\Refit\Tasks\KeepOneLayout;
+
+Refit::task(new KeepOneLayout(['auth']));
+```
 
 ## Remove the Flux Pro @source line from app.css
 
