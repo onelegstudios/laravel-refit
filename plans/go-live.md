@@ -28,28 +28,29 @@ Remember the version segment: with versioning on, a page lives at
 
 ## 2. Fix the cross-links to match
 
-Every internal link in `docs/` is currently site-absolute against the `/docs`
-prefix — `[Icons](/docs/guide/icons)`. There are 44 of them across the tree,
-pointing at 15 distinct targets (README's links are relative `.md` paths and are
+Every internal link in `docs/` is site-absolute against the `/docs` prefix —
+`[Icons](/docs/using-refit/guide/icons)`. There are 53 of them across the tree,
+pointing at 19 distinct targets (README's links are relative `.md` paths and are
 fine as they are; they serve GitHub, not the site).
 
-All of them break the moment the prefix or the version segment changes.
+All of them break the moment the prefix or the version segment changes. The
+page structure is settled now, so this rewrite only has to happen once.
 
 Three ways to fix, in order of preference:
 
-1. **Relative links** — `[Icons](../guide/icons)` from a page one level deep.
+1. **Relative links** — `[Icons](../guide/icons)` from a sibling section.
    Prefix- and version-independent, because the browser resolves them against
-   the current URL. Costs: depth has to be right per page, and they no longer
-   render as links on GitHub (they already don't, being absolute).
+   the current URL. Costs: depth has to be right per page, and the tree is three
+   levels deep in places, so the depths vary.
 2. **Absolute with the final prefix** — simplest to read, but hardcodes both the
    prefix and the version, so every link needs rewriting again at v1.
 3. **A Laradocs variable** — `Laradocs::share('base', '/open-source/refit/docs')`
-   and `[Icons]({{ base }}/guide/icons)`. Prefix-independent, but the markdown
-   stops being readable outside the site, and the value lives in the *site's*
-   provider — a coupling in the wrong direction for a package repo.
+   and `[Icons]({{ base }}/using-refit/guide/icons)`. Prefix-independent, but the
+   markdown stops being readable outside the site, and the value lives in the
+   *site's* provider — a coupling in the wrong direction for a package repo.
 
 - [ ] Choose an approach
-- [ ] Rewrite the 44 links
+- [ ] Rewrite the 53 links
 - [ ] Re-run the link check (the loop used when the docs were written: extract
       every `(/docs…)` or relative target and assert a file exists for it)
 - [ ] **Verify against a versioned layout**, not just the flat workbench — this

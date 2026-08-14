@@ -1,7 +1,6 @@
 ---
 title: Getting started
 description: Install refit and make your first run.
-group: Using Refit
 order: 2
 ---
 
@@ -35,7 +34,7 @@ git add . && git commit -m "Fresh starter kit"
 ```
 
 Both checks can be waived with `--force`, but the second one is the only safety
-net refit has. See [The refit command](/docs/guide/the-refit-command#preflight)
+net refit has. See [The refit command](/docs/using-refit/guide/the-refit-command#preflight)
 for the exact wording of each failure.
 
 ## Run it
@@ -82,7 +81,7 @@ php artisan refit --dry-run
 1. **Read the diff.** `git diff` is the review, and it is the reason the clean
    tree was required.
 2. **Check `REFIT-NOTES.md`** if refit wrote one. It only appears when something
-   needs a human — see [Troubleshooting](/docs/guide/troubleshooting).
+   needs a human — see [Troubleshooting](/docs/using-refit/reference/troubleshooting).
 3. **Say yes when refit offers to remove itself.** It deletes the published
    config on its way out and prints the removal command:
 
@@ -92,7 +91,7 @@ php artisan refit --dry-run
 
 ## Next steps
 
-- [Icons](/docs/guide/icons) — what each of the three answers does.
-- [Jobs](/docs/guide/jobs) — the structural changes on offer.
-- [Configuration](/docs/guide/configuration) — change the component map, the
+- [Icons](/docs/using-refit/guide/icons) — what each of the three answers does.
+- [Jobs](/docs/using-refit/guide/jobs) — the structural changes on offer.
+- [Configuration](/docs/using-refit/reference/configuration) — change the component map, the
   notes file, or the list of jobs.

@@ -1,7 +1,7 @@
 ---
 title: Architecture
 description: Detect, ask, plan, confirm, apply — and why the plan is a value.
-order: 2
+order: 1
 ---
 
 # Architecture

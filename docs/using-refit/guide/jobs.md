@@ -18,7 +18,7 @@ something that would do nothing.
 | Cleanup | Delete the unused auth layouts | `single-auth-layout` |
 | Cleanup | Remove the Flux Pro `@source` line from `app.css` | `remove-flux-pro-source` |
 
-The keys are what [`--answers`](/docs/guide/the-refit-command#running-without-prompts)
+The keys are what [`--answers`](/docs/using-refit/guide/the-refit-command#running-without-prompts)
 takes.
 
 ## Use components instead of partials
@@ -126,4 +126,4 @@ broken.
 
 The list is not fixed — a job is a class implementing a small interface, and
 refit handles the ordering, the preview and the apply. See
-[Writing your own job](/docs/guide/custom-jobs).
+[Writing your own job](/docs/using-refit/guide/custom-jobs).

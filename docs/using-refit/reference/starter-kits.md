@@ -1,7 +1,7 @@
 ---
 title: Supported starter kits
 description: The Livewire variations refit knows, and the one it does not.
-order: 6
+order: 2
 ---
 
 # Supported starter kits
@@ -47,4 +47,4 @@ offered, and nothing is assumed that disk did not answer.
 
 Refit's test suite runs against real copies of all five, downloaded with
 `composer fixtures`. They are gitignored, and tests that need one skip themselves
-when it is absent. See [Testing](/docs/development/testing).
+when it is absent. See [Testing](/docs/development/contributing/testing).

@@ -162,8 +162,9 @@ their data explicitly and compose fine inside your own chrome.
 
 - **Edit-this-page needs a path fix.** `ui.edit.url` interpolates `{file}`
   relative to the docs root, which here is `docs-sources/refit`, so `{file}`
-  arrives as `v0/guide/icons.md`. Pointing that at the refit repo (where the
-  file is `docs/guide/icons.md`) means stripping the version segment — a small
+  arrives as `v0/using-refit/guide/icons.md`. Pointing that at the refit repo
+  (where the file is `docs/using-refit/guide/icons.md`) means stripping the
+  version segment — a small
   view override, or leave the edit link off until it matters.
 - **Two sitemaps, one site.** Each project prefix serves its own. Make sure the
   site's root sitemap references them rather than competing.

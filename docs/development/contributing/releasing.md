@@ -1,7 +1,7 @@
 ---
 title: Releasing
 description: Versioning, the changelog, and the workflows that run around a release.
-order: 6
+order: 3
 ---
 
 # Releasing

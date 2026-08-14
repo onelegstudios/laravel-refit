@@ -1,7 +1,7 @@
 ---
 title: Configuration
 description: Publishing config/refit.php, choosing which jobs are offered, and where notes are written.
-order: 4
+order: 1
 ---
 
 # Configuration
@@ -51,7 +51,7 @@ not translate, files it declined to touch. Set it to `null` to keep the report o
 screen only.
 
 The file is written only when there is a warning to record, so a clean run leaves
-no notes behind. See [Troubleshooting](/docs/guide/troubleshooting).
+no notes behind. See [Troubleshooting](/docs/using-refit/reference/troubleshooting).
 
 ## Registering jobs from a service provider
 

@@ -1,7 +1,7 @@
 ---
 title: The icon pipeline
 description: The map, the bundled artwork, and the recorded Flux internals.
-order: 4
+order: 3
 ---
 
 # The icon pipeline

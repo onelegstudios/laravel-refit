@@ -1,7 +1,7 @@
 ---
 title: Troubleshooting
 description: Warnings, REFIT-NOTES.md, and how to undo a run.
-order: 7
+order: 3
 ---
 
 # Troubleshooting
@@ -39,7 +39,7 @@ project root:
 The file appears only when there is something under **Needs a look**; a clean run
 leaves none. Delete it once you have worked through the list — it is a report,
 not state refit reads back. Set `notes` to `null` in
-[the config](/docs/guide/configuration) to keep the report on screen only.
+[the config](/docs/using-refit/reference/configuration) to keep the report on screen only.
 
 ## Common messages
 
@@ -66,7 +66,7 @@ The name is outside refit's curated map, so that usage stays Heroicons. The map
 is deliberately semantic rather than mechanical — `arrow-right-start-on-rectangle`
 is Lucide's `log-out` — and guessing would be worse than reporting. Adding a
 translation is a small change to refit itself; see
-[The icon pipeline](/docs/development/icon-pipeline).
+[The icon pipeline](/docs/development/internals/icon-pipeline).
 
 **"No Lucide artwork bundled for X"**
 

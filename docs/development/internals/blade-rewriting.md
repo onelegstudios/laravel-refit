@@ -1,7 +1,7 @@
 ---
 title: Blade rewriting
 description: The tag parser, the offset-based rewriter, and the balance guard.
-order: 3
+order: 2
 ---
 
 # Blade rewriting

@@ -18,7 +18,7 @@ It is one-time scaffolding: it rewrites files in place, the changes are one-way 
 
 ## Documentation
 
-The README is a short introduction only. Everything else lives in `docs/`, as Laradocs-flavoured markdown with YAML front-matter: `docs/guide/` for people using refit, `docs/development/` for people working on it, and `_index.md` as each section's landing page. Cross-links use site-absolute paths (`/docs/guide/icons`).
+The README is a short introduction only. Everything else lives in `docs/`, as Laradocs-flavoured markdown with YAML front-matter. The folder tree is the navigation — `docs/using-refit/{guide,reference}` for people using refit, `docs/development/{contributing,internals}` for people working on it, and `_index.md` as each section's landing page. Nothing uses `group:`; add a folder rather than a front-matter group. Cross-links use site-absolute paths (`/docs/using-refit/guide/icons`).
 
 Laradocs is a dev dependency and the workbench provider points it at this repository's `docs/`, so `composer serve` renders the documentation at `/docs`. `docs/` is `export-ignore`d, so it stays out of the Composer dist. When behavior changes, update the page that promises it rather than growing the README back.
 

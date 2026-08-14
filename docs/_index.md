@@ -24,23 +24,23 @@ php artisan refit
 
 - **Settles the icon question.** A fresh kit speaks Heroicons _and_ Lucide at
   once. Refit takes you to one or the other — including the icons Flux renders
-  from inside its own components. See [Icons](/docs/guide/icons).
+  from inside its own components. See [Icons](/docs/using-refit/guide/icons).
 - **Runs structural jobs.** Partials become components, loose components get
   sorted into folders, dead auth layouts go. Only jobs that fit the kit it
-  detected are offered. See [Jobs](/docs/guide/jobs).
+  detected are offered. See [Jobs](/docs/using-refit/guide/jobs).
 - **Shows you the plan first.** Nothing touches disk until you have read the
   list of changes and agreed to it. See
-  [The refit command](/docs/guide/the-refit-command).
+  [The refit command](/docs/using-refit/guide/the-refit-command).
 - **Reports what it could not do.** An icon with no translation or an `@include`
   that passes data is named, with the file it is in, never silently guessed at.
-  See [Troubleshooting](/docs/guide/troubleshooting).
+  See [Troubleshooting](/docs/using-refit/reference/troubleshooting).
 
 ## Where to go next
 
 - New here? Start with [Getting started](/docs/getting-started).
 - Want to change what the jobs do, or add your own?
-  [Configuration](/docs/guide/configuration) and
-  [Writing your own job](/docs/guide/custom-jobs).
+  [Configuration](/docs/using-refit/reference/configuration) and
+  [Writing your own job](/docs/using-refit/guide/custom-jobs).
 - Working _on_ refit rather than with it? The
   [Development](/docs/development) section covers the architecture, the icon
   pipeline, and the test suite.
@@ -51,4 +51,4 @@ php artisan refit
 | ----------- | ----------------------------------------------------------------------------------------------------- |
 | PHP         | 8.3, 8.4 or 8.5                                                                                       |
 | Laravel     | 13                                                                                                    |
-| Starter kit | Livewire + Flux, any `laravel new` variation — see [Supported starter kits](/docs/guide/starter-kits) |
+| Starter kit | Livewire + Flux, any `laravel new` variation — see [Supported starter kits](/docs/using-refit/reference/starter-kits) |

@@ -1,7 +1,7 @@
 ---
 title: Testing
 description: Pest, Testbench, the fixture suite, and what skips without a licence.
-order: 5
+order: 2
 ---
 
 # Testing
@@ -125,7 +125,7 @@ Two things skip rather than fail:
   are asserted without a licence in `tests/Unit/IconsTest.php`.
 
 Neither skip hides a regression in refit's own logic. See
-[The icon pipeline](/docs/development/icon-pipeline) for the licensed job that
+[The icon pipeline](/docs/development/internals/icon-pipeline) for the licensed job that
 covers the rest.
 
 ## CI

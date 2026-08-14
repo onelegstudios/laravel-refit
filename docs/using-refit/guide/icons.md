@@ -92,6 +92,6 @@ Two things can stop a translation, and both are reported rather than guessed:
   rename is dropped along with it — pointing a usage at an override that never
   gets written would leave a blank where the icon was.
 
-Both land in [`REFIT-NOTES.md`](/docs/guide/troubleshooting). Adding a
+Both land in [`REFIT-NOTES.md`](/docs/using-refit/reference/troubleshooting). Adding a
 translation is a two-line change to refit itself; see
-[The icon pipeline](/docs/development/icon-pipeline).
+[The icon pipeline](/docs/development/internals/icon-pipeline).

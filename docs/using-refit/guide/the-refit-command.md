@@ -61,10 +61,10 @@ undo. `--force` skips this check and both of its halves.
 Two questions, in order:
 
 1. **Icons.** Keep the mix, go all-Heroicons, or go all-Lucide. See
-   [Icons](/docs/guide/icons).
+   [Icons](/docs/using-refit/guide/icons).
 2. **Jobs.** A multiselect of the structural and cleanup jobs that fit the
    detected kit. Only applicable jobs are listed, so you are never asked to pick
-   something that would do nothing. See [Jobs](/docs/guide/jobs).
+   something that would do nothing. See [Jobs](/docs/using-refit/guide/jobs).
 
 ## Plan
 
@@ -98,7 +98,7 @@ the question.
 
 Actions run in stage order, each one echoed as it goes. Afterwards refit prints
 any warnings, writes them to `REFIT-NOTES.md` if there are any
-([configurable](/docs/guide/configuration)), and offers to remove itself.
+([configurable](/docs/using-refit/reference/configuration)), and offers to remove itself.
 
 ## Running without prompts
 
@@ -112,7 +112,7 @@ php artisan refit --answers='{"icons":"lucide","tasks":["partials-to-components"
 | Key | Value |
 |---|---|
 | `icons` | `keep`, `heroicons` or `lucide`. Anything unrecognised falls back to `keep` |
-| `tasks` | A list of task keys. Unknown keys are ignored — see [Jobs](/docs/guide/jobs) for the list |
+| `tasks` | A list of task keys. Unknown keys are ignored — see [Jobs](/docs/using-refit/guide/jobs) for the list |
 
 With `--answers` there is no confirmation step (passing answers *is* the
 confirmation) and no offer to remove refit at the end. Combine it with

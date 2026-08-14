@@ -1,7 +1,7 @@
 ---
 title: Writing your own job
 description: The Task interface, the plan API, and the actions refit ships.
-order: 5
+order: 4
 ---
 
 # Writing your own job
@@ -134,7 +134,7 @@ confirmation preview, and therefore the thing they are agreeing to.
 An action that rewrites every view should extend `Plan\Actions\BladeSweep`
 instead, which walks the tree for you, and guards each file: a rewrite that would
 leave the Blade less balanced than it found it is skipped and reported rather
-than written. See [Blade rewriting](/docs/development/blade-rewriting) for how
+than written. See [Blade rewriting](/docs/development/internals/blade-rewriting) for how
 that check works.
 
 ## Reporting
@@ -148,7 +148,7 @@ $report->changed('resources/views/x.blade.php');  // a path this action wrote
 ```
 
 Warnings are printed at the end of the run and written to
-[`REFIT-NOTES.md`](/docs/guide/troubleshooting). Notes are recorded in the same
+[`REFIT-NOTES.md`](/docs/using-refit/reference/troubleshooting). Notes are recorded in the same
 file when there is at least one warning to write it for.
 
 ## Testing a job
@@ -166,5 +166,5 @@ expect($plan->describe())->toContain('  delete resources/views/welcome.blade.php
 ```
 
 `Plan::describe()` renders the plan as the same lines the confirmation preview
-shows. See [Testing](/docs/development/testing) for how refit's own suite is
+shows. See [Testing](/docs/development/contributing/testing) for how refit's own suite is
 laid out.

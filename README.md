@@ -54,22 +54,22 @@ Full documentation lives in [`docs/`](docs), and is served by
 **Using refit**
 
 - [Getting started](docs/getting-started.md)
-- [The refit command](docs/guide/the-refit-command.md) — stages, options, and the checks that stop a run
-- [Icons](docs/guide/icons.md)
-- [Jobs](docs/guide/jobs.md)
-- [Configuration](docs/guide/configuration.md)
-- [Writing your own job](docs/guide/custom-jobs.md)
-- [Supported starter kits](docs/guide/starter-kits.md)
-- [Troubleshooting](docs/guide/troubleshooting.md)
+- [The refit command](docs/using-refit/guide/the-refit-command.md) — stages, options, and the checks that stop a run
+- [Icons](docs/using-refit/guide/icons.md)
+- [Jobs](docs/using-refit/guide/jobs.md)
+- [Configuration](docs/using-refit/reference/configuration.md)
+- [Writing your own job](docs/using-refit/guide/custom-jobs.md)
+- [Supported starter kits](docs/using-refit/reference/starter-kits.md)
+- [Troubleshooting](docs/using-refit/reference/troubleshooting.md)
 
 **Working on refit**
 
-- [Setup](docs/development/setup.md)
-- [Architecture](docs/development/architecture.md)
-- [Blade rewriting](docs/development/blade-rewriting.md)
-- [The icon pipeline](docs/development/icon-pipeline.md)
-- [Testing](docs/development/testing.md)
-- [Releasing](docs/development/releasing.md)
+- [Setup](docs/development/contributing/setup.md)
+- [Architecture](docs/development/internals/architecture.md)
+- [Blade rewriting](docs/development/internals/blade-rewriting.md)
+- [The icon pipeline](docs/development/internals/icon-pipeline.md)
+- [Testing](docs/development/contributing/testing.md)
+- [Releasing](docs/development/contributing/releasing.md)
 
 ## Testing
 
@@ -79,7 +79,7 @@ composer test
 
 Tests that exercise a real starter kit skip themselves unless the fixtures have
 been downloaded with `composer fixtures`. You do not need a Flux Pro licence to
-contribute — see [Setup](docs/development/setup.md).
+contribute — see [Setup](docs/development/contributing/setup.md).
 
 ## Changelog
 

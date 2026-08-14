@@ -67,7 +67,7 @@ composer install --working-dir=.flux-pro
 > without a licence loses Pest and PHPStan too. The separate manifest exists
 > precisely so the root install never reads it.
 
-See [The icon pipeline](/docs/development/icon-pipeline) for what to do with the
+See [The icon pipeline](/docs/development/internals/icon-pipeline) for what to do with the
 sidecar once it is installed.
 
 ## Repository layout
