@@ -111,6 +111,7 @@ tree as a whole in `Reconcile` or later.
 | `DeleteFile` | `Move` | Delete one file, reporting when it was already gone |
 | `RemoveDirectoryIfEmpty` | `Move` | Remove a directory the plan has just emptied |
 | `MoveComponentsIntoFolders` | `Move` | Sort loose components into subfolders, recording each move in a ledger |
+| `ReplaceInFile` | `Reconcile` | Swap one literal string for another in a single named file |
 | `AddAttribute` | `Reconcile` | Give a component tag an attribute it does not have yet |
 | `RewriteIconNames` | `Reconcile` | Translate icon names in both the forms Flux accepts |
 | `ReplaceIncludeWithComponent` | `Reconcile` | `@include('partials.head')` → `<x-head />` |
