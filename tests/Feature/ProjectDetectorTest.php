@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Onelegstudios\Refit\Project\ComponentStyle;
 use Onelegstudios\Refit\Project\Feature;
+use Onelegstudios\Refit\Project\ProjectDetector;
 
 it('detects the component style each variant ships', function (string $kit, ComponentStyle $style): void {
     expect(detectFixture($kit)->componentStyle)->toBe($style);
@@ -53,6 +54,17 @@ it('finds auth views under either component style', function (): void {
     // single-file variant prefixes the filename, so neither path is literal.
     expect(detectFixture('livewire-class-components')->has(Feature::Registration))->toBeTrue()
         ->and(detectFixture('livewire')->has(Feature::Registration))->toBeTrue();
+});
+
+it('still finds the auth views once they have moved out of pages', function (): void {
+    $root = copyFixture('livewire');
+
+    rename($root.'/resources/views/pages/auth', $root.'/resources/views/auth');
+
+    $project = (new ProjectDetector)->detect($root);
+
+    expect($project->has(Feature::TwoFactor))->toBeTrue()
+        ->and($project->has(Feature::Registration))->toBeTrue();
 });
 
 it('reports Flux Pro as absent for a stock kit', function (string $kit): void {

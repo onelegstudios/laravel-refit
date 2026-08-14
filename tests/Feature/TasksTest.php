@@ -10,6 +10,7 @@ use Onelegstudios\Refit\Project\Project;
 use Onelegstudios\Refit\Project\ProjectDetector;
 use Onelegstudios\Refit\Refit;
 use Onelegstudios\Refit\Tasks\KeepOneLayout;
+use Onelegstudios\Refit\Tasks\MoveAuthViewsOutOfPages;
 use Onelegstudios\Refit\Tasks\MoveToastsToTop;
 use Onelegstudios\Refit\Tasks\NamespaceComponents;
 use Onelegstudios\Refit\Tasks\PromotePartialsToComponents;
@@ -40,6 +41,7 @@ it('registers the configured tasks', function (): void {
     expect(array_map(fn (Task $task): string => $task->key(), $refit->tasks()))
         ->toBe([
             'partials-to-components',
+            'auth-views-out-of-pages',
             'namespace-components',
             'toasts-at-top',
             'single-layout',
@@ -96,6 +98,53 @@ it('leaves no partial include behind', function (string $kit): void {
         expect($project->get($path))->not->toContain("@include('partials.");
     }
 })->with(starterKits());
+
+it('moves the auth views out of pages', function (string $kit): void {
+    [$project] = runTask(new MoveAuthViewsOutOfPages, $kit);
+
+    expect($project->exists('resources/views/auth/login.blade.php'))->toBeTrue()
+        ->and($project->exists('resources/views/auth/reset-password.blade.php'))->toBeTrue()
+        ->and($project->exists('resources/views/pages/auth'))->toBeFalse();
+})->with(['livewire', 'livewire-teams']);
+
+it('points Fortify at the moved views', function (): void {
+    [$project] = runTask(new MoveAuthViewsOutOfPages, 'livewire');
+
+    expect($project->get('app/Providers/FortifyServiceProvider.php'))
+        ->toContain("view('auth.login')")
+        ->toContain("view('auth.forgot-password')")
+        ->not->toContain('pages::auth.');
+});
+
+it('leaves the Livewire pages in the pages directory', function (): void {
+    [$project] = runTask(new MoveAuthViewsOutOfPages, 'livewire');
+
+    expect($project->get('resources/views/pages/settings/⚡profile.blade.php'))
+        ->toContain('<x-pages::settings.layout');
+});
+
+it('is not offered to a kit that keeps its auth views elsewhere', function (string $kit): void {
+    expect((new MoveAuthViewsOutOfPages)->appliesTo(detectFixture($kit)))->toBeFalse();
+})->with(['livewire-class-components', 'livewire-workos', 'livewire-workos-teams']);
+
+it('moves the class-component views when it is pointed at them', function (): void {
+    [$project] = runTask(
+        new MoveAuthViewsOutOfPages('resources/views/livewire/auth', 'livewire.auth.'),
+        'livewire-class-components',
+    );
+
+    expect($project->exists('resources/views/auth/login.blade.php'))->toBeTrue()
+        ->and($project->exists('resources/views/livewire/auth'))->toBeFalse()
+        ->and($project->get('app/Providers/FortifyServiceProvider.php'))
+        ->toContain("view('auth.login')")
+        ->not->toContain('livewire.auth.');
+});
+
+it('has nothing left to move once the auth views have gone', function (): void {
+    [$project] = runTask(new MoveAuthViewsOutOfPages, 'livewire');
+
+    expect((new MoveAuthViewsOutOfPages)->appliesTo($project))->toBeFalse();
+});
 
 it('groups components by domain and repoints every reference', function (): void {
     [$project] = runTask(new NamespaceComponents, 'livewire');

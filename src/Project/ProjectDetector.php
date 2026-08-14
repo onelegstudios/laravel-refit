@@ -71,13 +71,17 @@ final class ProjectDetector
      *
      * Single-file components carry an emoji prefix on the filename, so the check
      * globs rather than testing an exact path.
+     *
+     * `resources/views` itself is searched last because a previous run may have
+     * moved the auth views up out of the kit's directory. A feature is detected
+     * from a view that exists, not from where the installer happened to put it.
      */
     private function hasView(string $root, string $name): bool
     {
         $directory = dirname($name);
         $file = basename($name);
 
-        foreach (['resources/views/pages', 'resources/views/livewire'] as $base) {
+        foreach (['resources/views/pages', 'resources/views/livewire', 'resources/views'] as $base) {
             $matches = glob(sprintf('%s/%s/%s/*%s.blade.php', $root, $base, $directory, $file));
 
             if ($matches !== false && $matches !== []) {

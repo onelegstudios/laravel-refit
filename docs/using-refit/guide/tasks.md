@@ -13,6 +13,7 @@ something that would do nothing.
 | Group | Task | Key |
 |---|---|---|
 | Structure | Use components instead of partials | `partials-to-components` |
+| Structure | Move the auth views out of pages | `auth-views-out-of-pages` |
 | Structure | Group components into folders | `namespace-components` |
 | Structure | Show toasts at the top of the screen | `toasts-at-top` |
 | Cleanup | Delete the layouts the kit does not render | `single-layout` |
@@ -37,6 +38,58 @@ unplanned is still sitting in it, which is reported and left alone.
 > [!NOTE]
 > An `@include` that passes data has no mechanical translation: the component
 > would need matching props. Those are reported and left for you.
+
+## Move the auth views out of pages
+
+`resources/views/pages` is Livewire's directory. Everything else in it is a
+single-file component — an `⚡` on the filename, a class in the same file, a route
+pointing at it:
+
+```php
+Route::livewire('settings/profile', 'pages::settings.profile')->name('profile.edit');
+```
+
+The auth views are none of that. They are plain Blade, rendered by Fortify:
+
+```php
+Fortify::loginView(fn () => view('pages::auth.login'));
+```
+
+The folder is the only thing they share with their neighbours, and it costs
+something: logging in reads as though it were a Livewire page, and every
+reference carries a namespace that means nothing here. The task moves them to
+`resources/views/auth`, where a Laravel developer looks for ordinary views:
+
+```
+resources/views/
+├── auth/
+│   ├── confirm-password.blade.php
+│   ├── forgot-password.blade.php
+│   ├── login.blade.php
+│   ├── register.blade.php
+│   ├── reset-password.blade.php
+│   ├── two-factor-challenge.blade.php
+│   └── verify-email.blade.php
+└── pages/
+    └── settings/
+```
+
+`FortifyServiceProvider` is the only file that names them, so it is the whole
+reconciliation — `view('pages::auth.login')` becomes `view('auth.login')`, and
+nothing in the Blade tree points at them at all. Whichever views survived
+`install:features` are the ones that move; `pages/` itself stays, with the
+Livewire pages still in it.
+
+The class-component kit keeps the same views under `resources/views/livewire`,
+where the argument is the same one. That is a different pair of names, so refit
+does not assume it — register the task with them to move those too:
+
+```php
+use Onelegstudios\Refit\Facades\Refit;
+use Onelegstudios\Refit\Tasks\MoveAuthViewsOutOfPages;
+
+Refit::task(new MoveAuthViewsOutOfPages('resources/views/livewire/auth', 'livewire.auth.'));
+```
 
 ## Group components into folders
 
