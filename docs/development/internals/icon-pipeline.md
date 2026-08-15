@@ -41,7 +41,9 @@ It also carries the rules about *where* a name can appear:
 
 `icon:variant` is deliberately absent from `NAME_ATTRIBUTES`: it takes an
 appearance keyword such as `outline`, not a name, and translating it would
-corrupt the tag.
+corrupt the tag. `DropSolidIconVariant` reads it from the other end — as the
+weight a component hands down to the icons its `icon` and `icon:trailing`
+attributes name.
 
 ### Adding a translation
 
@@ -85,6 +87,12 @@ When the file is written at a name that is not the artwork's own — a Flux
 internal, or a Flux-owned name like `loading` — the generator adds a second
 comment line saying so, because the reason a file stands in for another name is
 not obvious months later.
+
+The stub throws on the `solid` variant, because Lucide has only one weight. That
+is inherited rather than chosen, and it is why the plan carries
+`DropSolidIconVariant` alongside the renames: it takes `variant="solid"` off the
+usages that are becoming Lucide, ahead of `RewriteIconNames` so it still reads
+the names the views carry today.
 
 ## The Flux internals manifest
 

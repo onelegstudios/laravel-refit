@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Onelegstudios\Refit\Icons;
 
 use Onelegstudios\Refit\Plan\Actions\DeleteFile;
+use Onelegstudios\Refit\Plan\Actions\DropSolidIconVariant;
 use Onelegstudios\Refit\Plan\Actions\RewriteIconNames;
 use Onelegstudios\Refit\Plan\Actions\WriteFile;
 use Onelegstudios\Refit\Plan\Plan;
@@ -106,10 +107,14 @@ final class IconPlanner
         /** @var array<string, string> $overrides Override filename mapped to bundled Lucide art. */
         $overrides = [];
 
+        /** @var list<string> $translated Names, as the views write them today, that end up drawn by Lucide. */
+        $translated = [];
+
         foreach ($this->scanner->scan($project) as $name => $paths) {
             // Names the kit already vendors as Lucide need art, but no rewrite.
             if ($this->generator->has($name) && IconMap::toLucide($name) === null) {
                 $overrides[$name] = $name;
+                $translated[] = $name;
 
                 continue;
             }
@@ -139,6 +144,8 @@ final class IconPlanner
 
                 continue;
             }
+
+            $translated[] = $name;
 
             // Flux draws this one itself, so the override keeps Flux's name and
             // the usages are left as they are.
@@ -184,6 +191,11 @@ final class IconPlanner
                     ),
                 ),
             ));
+        }
+
+        // Ahead of the rename, so it reads the names the views still carry.
+        if ($translated !== []) {
+            $plan->add(Stage::Reconcile, new DropSolidIconVariant($translated));
         }
 
         if ($renames !== []) {

@@ -109,6 +109,37 @@ it('adds the attribute only to the tag it was given', function (): void {
     expect($result)->toBe('<flux:toast.group position="top end"><flux:toast.group.item /></flux:toast.group>');
 });
 
+it('removes an attribute together with the space in front of it', function (): void {
+    $result = $this->rewriter->removeAttributes(
+        '<flux:icon.check variant="solid" class="text-green-500" />',
+        'flux:',
+        fn (Tag $tag, Attribute $attribute): bool => $attribute->name === 'variant',
+    );
+
+    expect($result)->toBe('<flux:icon.check class="text-green-500" />');
+});
+
+it('closes up the line an attribute was alone on', function (): void {
+    $result = $this->rewriter->removeAttributes(
+        implode(PHP_EOL, [
+            '<flux:icon.check',
+            '    x-show="copied"',
+            '    variant="solid"',
+            '    class="text-green-500"',
+            '></flux:icon>',
+        ]),
+        'flux:',
+        fn (Tag $tag, Attribute $attribute): bool => $attribute->name === 'variant',
+    );
+
+    expect($result)->toBe(implode(PHP_EOL, [
+        '<flux:icon.check',
+        '    x-show="copied"',
+        '    class="text-green-500"',
+        '></flux:icon>',
+    ]));
+});
+
 it('applies several edits to one tag without corrupting offsets', function (): void {
     $result = $this->rewriter->rewriteAttributeValues(
         '<flux:button icon="plus" icon-trailing="chevron-down" />',

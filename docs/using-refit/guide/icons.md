@@ -76,6 +76,23 @@ own vendored Lucide icons — same credit comment, same `variant` prop, same
 `Flux::classes()` sizing and stroke-width tables. A generated file is
 indistinguishable from the ones Laravel ships.
 
+### Lucide draws one weight
+
+That template throws on `variant="solid"` rather than quietly drawing an outline
+in its place — Laravel's decision, and refit keeps it. The kit's own two-factor
+setup modal asks for exactly that:
+
+```blade
+<flux:icon.check x-show="copied" variant="solid" class="text-green-500" />
+```
+
+So going all-Lucide drops the attribute, leaving the template's `outline`
+default. The same goes for the pass-through form, `<flux:button icon="trash"
+icon:variant="solid">`. Only icons that actually became Lucide are touched: one
+refit could not translate keeps its Heroicon and the solid weight with it, and a
+`variant="solid"` that belongs to the component rather than its icon — a
+`<flux:badge>`, say — is left alone.
+
 The artwork is bundled with refit rather than pulled from a Blade Icons package.
 Refit only ever generates the names it can translate, so a package dependency
 would add weight without widening what the tool can do, and it would make the
