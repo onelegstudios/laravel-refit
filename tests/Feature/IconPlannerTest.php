@@ -144,6 +144,62 @@ it('translates icons in all three written forms', function (): void {
         ->and($project->get('resources/views/components/desktop-user-menu.blade.php'))->toContain('name="chevrons-up-down"');
 });
 
+it('drops the solid variant the kit asks for, which Lucide cannot draw', function (string $kit, string $view): void {
+    $root = copyFixture($kit);
+    $project = (new ProjectDetector)->detect($root);
+
+    [$plan, $report] = planIcons($root, IconStrategy::Lucide);
+
+    expect($plan->describe())->toContain('  icons  drop variant="solid" (Lucide draws one weight)');
+
+    (new Applier)->apply($plan, $project, $report);
+
+    // The override throws on `solid` rather than quietly drawing an outline, so
+    // a leftover here fatals the first time someone copies their setup key.
+    expect($project->get($view))
+        ->not->toContain('variant="solid"')
+        ->toContain('x-show="copied"');
+})->with([
+    ['livewire', 'resources/views/pages/settings/⚡two-factor-setup-modal.blade.php'],
+    ['livewire-teams', 'resources/views/pages/settings/⚡two-factor-setup-modal.blade.php'],
+    ['livewire-class-components', 'resources/views/livewire/settings/security.blade.php'],
+]);
+
+it('leaves a solid variant alone unless the icon it weighs became Lucide', function (): void {
+    $root = projectWithView('resources/views/panel.blade.php', implode(PHP_EOL, [
+        '<flux:badge variant="solid">Live</flux:badge>',
+        '<flux:icon.sparkles variant="solid" />',
+        '<flux:icon.check variant="solid" />',
+    ]));
+    $project = (new ProjectDetector)->detect($root);
+
+    [$plan, $report] = planIcons($root, IconStrategy::Lucide);
+
+    (new Applier)->apply($plan, $project, $report);
+
+    // A badge's variant is its own, and `sparkles` has no Lucide translation, so
+    // it keeps both its Heroicon and the weight that goes with it.
+    expect($project->get('resources/views/panel.blade.php'))
+        ->toContain('<flux:badge variant="solid">')
+        ->toContain('<flux:icon.sparkles variant="solid" />')
+        ->toContain('<flux:icon.check />');
+});
+
+it('drops the variant a component hands down to the icon it renders', function (): void {
+    $root = projectWithView(
+        'resources/views/toolbar.blade.php',
+        '<flux:button icon="trash" icon:variant="solid">Delete</flux:button>',
+    );
+    $project = (new ProjectDetector)->detect($root);
+
+    [$plan, $report] = planIcons($root, IconStrategy::Lucide);
+
+    (new Applier)->apply($plan, $project, $report);
+
+    expect($project->get('resources/views/toolbar.blade.php'))
+        ->toBe('<flux:button icon="trash-2">Delete</flux:button>');
+});
+
 it('reports an icon whose Lucide artwork is missing rather than failing', function (): void {
     $root = projectWithView('resources/views/mailbox.blade.php', '<flux:icon.envelope />');
     $project = (new ProjectDetector)->detect($root);

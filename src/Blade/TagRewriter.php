@@ -115,6 +115,38 @@ final class TagRewriter
     }
 
     /**
+     * Drop attributes from tags under a prefix, whitespace and all.
+     *
+     * The callback decides per attribute. The run of whitespace in front of the
+     * attribute goes with it, so a multi-line tag closes up instead of keeping a
+     * blank line where the attribute used to be.
+     *
+     * @param  callable(Tag, Attribute): bool  $callback
+     */
+    public function removeAttributes(string $source, string $prefix, callable $callback): string
+    {
+        $edits = new Edits;
+
+        foreach ($this->parser->parse($source, $prefix) as $tag) {
+            foreach ($tag->attributes as $attribute) {
+                if (! $callback($tag, $attribute)) {
+                    continue;
+                }
+
+                $start = $attribute->offset;
+
+                while ($start > 0 && in_array($source[$start - 1], TagParser::WHITESPACE, true)) {
+                    $start--;
+                }
+
+                $edits->replace($start, $attribute->offset + $attribute->length - $start, '');
+            }
+        }
+
+        return $edits->apply($source);
+    }
+
+    /**
      * Rewrite the dotted suffix of tags such as `<flux:icon.home />`.
      *
      * @param  callable(string): (string|null)  $callback

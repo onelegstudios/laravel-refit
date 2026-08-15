@@ -20,7 +20,13 @@ final class TagParser
 
     private const string ATTRIBUTE_NAME_CHARACTERS = '/[A-Za-z0-9_\-.:@]/';
 
-    private const array WHITESPACE = [' ', "\t", "\n", "\r"];
+    /**
+     * The characters that separate a tag's name from its attributes, and its
+     * attributes from each other.
+     *
+     * @var list<string>
+     */
+    public const array WHITESPACE = [' ', "\t", "\n", "\r"];
 
     /**
      * Parse every opening and self-closing tag whose name starts with $prefix.
